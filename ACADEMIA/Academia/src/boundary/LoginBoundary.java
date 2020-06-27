@@ -92,7 +92,7 @@ public class LoginBoundary {
 						new TreinadorBoundary(stage);
 					} else if (tipoAcessoSelecionado.equalsIgnoreCase("cliente")) {
 
-						String CPF = acesso.getText();
+					/*	String CPF = acesso.getText();
 						ClienteControl cc = new ClienteControl();
 						if (cc.entrarAcademia(CPF)) {
 							JOptionPane.showMessageDialog(null, "Entrada Liberada!!");
@@ -100,7 +100,10 @@ public class LoginBoundary {
 							JOptionPane.showMessageDialog(null, "Problemas na liberação, procure a recepcionista");
 						}
 
-						new LoginBoundary(stage);
+						new LoginBoundary(stage); */
+					
+						System.out.println("Bem vindo cliente");
+						
 					}
 
 				} else {

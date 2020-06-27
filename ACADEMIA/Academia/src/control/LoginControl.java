@@ -29,30 +29,26 @@ public class LoginControl {
 
 	public boolean logar(String acesso, String tipoAcesso) throws SQLException {
 		if (tipoAcesso.equals(RECEPCIONISTA)) {
-			// essa aqui é a busca no banco ->>> RecepcionistaDAO recepcionistaDAO = new
-			// RecepcionistaDAO();
-			// essa aqui é a busca no banco ->>> Recepcionista recepcionista =
-			// recepcionistaDAO.buscarPorCodigoAcesso(acesso);
+			RecepcionistaDAO recepcionistaDAO = new RecepcionistaDAO();
+			Recepcionista recepcionista = recepcionistaDAO.buscarPorCodigoAcesso(acesso);
 
-			Recepcionista r = new Recepcionista();
-			return validarObjetoNaoNulo(r.getCodigoAcesso().equals(acesso));
+			// Recepcionista r = new Recepcionista();
+			return validarObjetoNaoNulo(recepcionista.getCodigoAcesso().equals(acesso));
 
 		} else if (tipoAcesso.equals(TREINADOR)) {
-			// essa aqui é a busca no banco ->>> TreinadorDAO treinadorDAO = new
-			// TreinadorDAO();
-			// essa aqui é a busca no banco ->>> Treinador treinador =
-			// treinadorDAO.buscarPorCodigoAcesso(acesso);
+			TreinadorDAO treinadorDAO = new TreinadorDAO();
+			Treinador treinador = treinadorDAO.buscarPorCodigoAcesso(acesso);
 
-			Treinador t = new Treinador();
+			// Treinador t = new Treinador();
 
-			return validarObjetoNaoNulo(t.getCodigoAcesso().equals(acesso));
+			return validarObjetoNaoNulo(treinador.getCodigoAcesso().equals(acesso));
 		} else {
-			// essa aqui é a busca no banco ->>> ClienteDAO clienteDAO = new ClienteDAO();
-			// essa aqui é a busca no banco ->>> Cliente cliente = clienteDAO.buscarClientePorCpf(acesso);
-			
-			Cliente c = new Cliente();
-			
-			return validarObjetoNaoNulo(c.getCPF().equals(acesso));
+			ClienteDAO clienteDAO = new ClienteDAO();
+			Cliente cliente = clienteDAO.buscarClientePorCpf(acesso);
+
+		//	Cliente c = new Cliente();
+
+			return validarObjetoNaoNulo(cliente.getCPF().equals(acesso));
 		}
 	}
 

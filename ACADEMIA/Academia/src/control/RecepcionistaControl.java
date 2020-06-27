@@ -12,11 +12,11 @@ public class RecepcionistaControl {
 	// remover iniciador quando montar o banco de dados; substituir por increment ID
 	long idCli = 0;
 	long idCon = 0;
-	
+
 	public long getIDCli() {
 		return idCli;
 	}
-	
+
 	public long getIDCon() {
 		return idCon;
 	}
@@ -36,6 +36,7 @@ public class RecepcionistaControl {
 		c.setTelefone(telefone);
 		idCli++;
 		clientes.add(c);
+
 	}
 
 	public void atualizarCliente(String CPF, String nome, String email, String telefone, String endereço) {
@@ -69,8 +70,7 @@ public class RecepcionistaControl {
 		}
 	}
 
-	public void novoContrato(String CPF, LocalDate dataContrato, int qtdParcelas, double valorMes,
-			double valorTotal) {
+	public void novoContrato(String CPF, LocalDate dataContrato, int qtdParcelas, double valorMes, double valorTotal) {
 
 		try {
 			Cliente cli = buscarCliente(CPF);
@@ -83,9 +83,9 @@ public class RecepcionistaControl {
 			con.setValorTotal(valorTotal);
 
 			contratos.add(con);
-			
+
 			idCon++;
-			
+
 			ContratoControl ct = new ContratoControl();
 			ct.gerarCobranca(con);
 
@@ -108,7 +108,7 @@ public class RecepcionistaControl {
 	}
 
 	public Contrato buscarContrato(String CPF) {
-		
+
 		int cont = 0;
 		for (Contrato c : contratos) {
 			if (c.getCliente().getCPF() == CPF) {
@@ -116,7 +116,7 @@ public class RecepcionistaControl {
 				return c;
 			}
 		}
-		if(cont == 0) {
+		if (cont == 0) {
 			System.out.println("Contrato não localizado");
 		}
 		return null;

@@ -3,7 +3,7 @@ package academia;
 public class Cliente {
 
 	long ID;
-	String CPF;
+	String CPF = "12345678900";
 	String nome;
 	String email;
     String telefone;

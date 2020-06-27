@@ -20,15 +20,20 @@ public class ClienteDAO {
     }
 
     public Cliente buscarClientePorCpf(String cpf) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("select * from cliente where cpf = ?");
-        preparedStatement.setString(1, cpf);
+       
+    	
+    	PreparedStatement preparedStatement = connection.prepareStatement("select * from cliente where cpf_cliente = ?");
+        
+    	
+    	
+    	preparedStatement.setString(1, cpf);
 
         ResultSet resultSet = preparedStatement.executeQuery();
-
+        
         if (resultSet.next()) {
-            Cliente cliente = new Cliente(resultSet.getLong("id_cliente"), resultSet.getString("cpf"),
-                    resultSet.getString("nome"), resultSet.getString("email"), resultSet.getString("telefone"),
-                    resultSet.getString("endereco"));
+            Cliente cliente = new Cliente(resultSet.getLong("id_cliente"), resultSet.getString("cpf_cliente"),
+                    resultSet.getString("nome_cliente"), resultSet.getString("email_cliente"), resultSet.getString("telefone_cliente"),
+                    resultSet.getString("endereco_cliente"));
             return cliente;
         } else {
             return null;
