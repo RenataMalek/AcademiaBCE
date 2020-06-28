@@ -3,12 +3,12 @@ package academia;
 import java.time.LocalDate;
 
 public class Contrato {
-
-	Cliente cliente = new Cliente();
 	long ID;
 	LocalDate dataContrato;
 	LocalDate dataComparacao;
 	LocalDate dataSistema;
+	String cpf_cli;
+
 	int qtdParcelas;
 	double valorMes;
 	double valorTotal;
@@ -22,14 +22,13 @@ public class Contrato {
 		ID = iD;
 	}
 
-	public Cliente getCliente() {
-		return cliente;
+	public String getCpf_cli() {
+		return cpf_cli;
 	}
-
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
+	
+	public void setCpf_cli(String cpf_cli) {
+		this.cpf_cli = cpf_cli;
 	}
-
 	public LocalDate getDataContrato() {
 		return dataContrato;
 	}

@@ -3,9 +3,9 @@ package control;
 import academia.Cliente;
 import academia.Recepcionista;
 import academia.Treinador;
-import dao.ClienteDAO;
-import dao.RecepcionistaDAO;
-import dao.TreinadorDAO;
+import dao.ClienteDAOImp;
+import dao.RecepcionistaDAOImp;
+import dao.TreinadorDAOImp;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,21 +29,21 @@ public class LoginControl {
 
 	public boolean logar(String acesso, String tipoAcesso) throws SQLException {
 		if (tipoAcesso.equals(RECEPCIONISTA)) {
-			RecepcionistaDAO recepcionistaDAO = new RecepcionistaDAO();
+			RecepcionistaDAOImp recepcionistaDAO = new RecepcionistaDAOImp();
 			Recepcionista recepcionista = recepcionistaDAO.buscarPorCodigoAcesso(acesso);
 
 			// Recepcionista r = new Recepcionista();
 			return validarObjetoNaoNulo(recepcionista.getCodigoAcesso().equals(acesso));
 
 		} else if (tipoAcesso.equals(TREINADOR)) {
-			TreinadorDAO treinadorDAO = new TreinadorDAO();
+			TreinadorDAOImp treinadorDAO = new TreinadorDAOImp();
 			Treinador treinador = treinadorDAO.buscarPorCodigoAcesso(acesso);
 
 			// Treinador t = new Treinador();
 
 			return validarObjetoNaoNulo(treinador.getCodigoAcesso().equals(acesso));
 		} else {
-			ClienteDAO clienteDAO = new ClienteDAO();
+			ClienteDAOImp clienteDAO = new ClienteDAOImp();
 			Cliente cliente = clienteDAO.buscarClientePorCpf(acesso);
 
 		//	Cliente c = new Cliente();

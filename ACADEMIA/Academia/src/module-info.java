@@ -5,6 +5,7 @@ module academia {
 	requires org.controlsfx.controls;
 	requires java.sql;
 	requires java.desktop;
+	requires javafx.base;
 	
 	opens academia;
 	opens boundary;

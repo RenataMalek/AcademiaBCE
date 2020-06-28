@@ -8,6 +8,8 @@ import javax.swing.JOptionPane;
 import academia.Cliente;
 import academia.Contrato;
 import control.RecepcionistaControl;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,9 +17,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class RecepcionistaBoundary {
+public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 
-	TextField txtID = new TextField();
+	private RecepcionistaControl control = new RecepcionistaControl();
+
+	TextField txtIDCli = new TextField();
 	TextField txtCPF = new TextField();
 	TextField txtNome = new TextField();
 	TextField txtEmail = new TextField();
@@ -26,10 +30,26 @@ public class RecepcionistaBoundary {
 
 	TextField txtAvisos = new TextField();
 
+	TextField txtIDCon = new TextField();
 	TextField txtDataContrato = new TextField();
 	TextField txtqtdParcelas = new TextField();
 	TextField txtValorMes = new TextField();
 	TextField txtValorTotal = new TextField();
+
+	Button manterCliButton = new Button("Área de gestão do cliente");
+	Button manterConButton = new Button("Área de gestão do contrato");
+	Button voltar = new Button("Voltar");
+
+	Button novoCliButton = new Button("Adicionar");
+	Button buscarCliButton = new Button("Buscar");
+	Button mostrarTodosCliButton = new Button("Exibir todos");
+	Button voltarButton = new Button("Voltar");
+
+	Button novoConButton = new Button("Adicionar");
+	Button buscarConButton = new Button("Buscar");
+	Button mostrarTodosConButton = new Button("Exibir todos");
+	Button voltarButton2 = new Button("Voltar");
+	Button buscarCliConButton = new Button("Buscar");
 
 	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -47,21 +67,18 @@ public class RecepcionistaBoundary {
 
 		Scene scene = new Scene(pane, 700, 500);
 
-		Button manterCliButton = new Button("Área de gestão do cliente");
 		manterCliButton.relocate(220, 110);
 		manterCliButton.setMinWidth(200);
 		manterCliButton.setOnMouseClicked(event -> cliente());
 
-		Button manterConButton = new Button("Área de gestão do contrato");
 		manterConButton.relocate(220, 220);
 		manterConButton.setMinWidth(200);
 		manterConButton.setOnMouseClicked(event -> contrato());
 
-		Button voltar = new Button("Voltar");
 		voltar.relocate(220, 330);
 		voltar.setMinWidth(200);
 		voltar.setOnMouseClicked(event -> voltarInicio());
-		
+
 		pane.getChildren().add(manterCliButton);
 		pane.getChildren().add(manterConButton);
 		pane.getChildren().add(voltar);
@@ -76,22 +93,16 @@ public class RecepcionistaBoundary {
 
 		Scene scene = new Scene(pane, 700, 500);
 
-		Button novoCliButton = new Button("Adicionar");
 		novoCliButton.relocate(300, 50);
 		novoCliButton.setMinWidth(200);
 		novoCliButton.setOnMouseClicked(event -> boundaryToEntityCli());
 
-		Button buscarCliButton = new Button("Buscar");
 		buscarCliButton.relocate(300, 110);
 		buscarCliButton.setMinWidth(200);
-		buscarCliButton.setOnMouseClicked(event -> entityToBoundaryCli(String.valueOf(txtCPF.getText())));
 
-		Button mostrarTodosCliButton = new Button("Exibir todos");
 		mostrarTodosCliButton.relocate(300, 180);
 		mostrarTodosCliButton.setMinWidth(200);
-		// mostrarTodosCliButton.setOnMouseClicked(event -> mostratTodosCli());
 
-		Button voltarButton = new Button("Voltar");
 		voltarButton.relocate(300, 250);
 		voltarButton.setMinWidth(200);
 		voltarButton.setOnMouseClicked(event -> voltar());
@@ -101,10 +112,13 @@ public class RecepcionistaBoundary {
 		pane.getChildren().add(mostrarTodosCliButton);
 		pane.getChildren().add(voltarButton);
 
+		novoCliButton.setOnAction(this);
+		buscarCliButton.setOnAction(this);
+		mostrarTodosCliButton.setOnAction(this);
+
 		Label id = new Label("ID: ");
 		id.relocate(50, 50);
-		txtID.relocate(110, 50);
-		txtID.setText(String.valueOf(rc.getIDCli()));
+		txtIDCli.relocate(110, 50);
 
 		Label cpf = new Label("CPF: ");
 		cpf.relocate(50, 100);
@@ -130,7 +144,7 @@ public class RecepcionistaBoundary {
 		txtAvisos.setMinWidth(200);
 
 		pane.getChildren().add(id);
-		pane.getChildren().add(txtID);
+		pane.getChildren().add(txtIDCli);
 		pane.getChildren().add(cpf);
 		pane.getChildren().add(txtCPF);
 		pane.getChildren().add(nome);
@@ -148,41 +162,62 @@ public class RecepcionistaBoundary {
 
 	}
 
-	public RecepcionistaControl boundaryToEntityCli() {
+	@Override
+	public void handle(ActionEvent e) {
+
+		
+
+		if (e.getTarget() == novoCliButton) {
+			System.out.println("chegamos aqui");
+			Cliente c = boundaryToEntityCli();
+			control.novoCliente(c);
+		} else if (e.getTarget() == buscarCliButton) {
+			try {
+				String CPF = txtCPF.getText();
+				Cliente c = control.buscarCliente(CPF);
+				entityToBoundaryCli(c);
+			} catch (Exception f) {
+				System.out.println("Cliente não possui cadastro");
+			}
+
+		} else if (e.getTarget() == novoConButton) {
+			Contrato c = boundaryToEntityCon();
+			control.novoContrato(c);
+		} else if (e.getTarget() == buscarConButton) {
+			String CPF = txtCPF.getText();
+			Contrato c = control.buscarContrato(CPF);
+			entityToBoundaryCon(c);
+		}
+
+	}
+
+	public Cliente boundaryToEntityCli() {
+
+		Cliente c = new Cliente();
+
 		try {
 
-			String CPF = txtCPF.getText();
-			String nome = txtNome.getText();
-			String email = txtEmail.getText();
-			String endereco = txtEndereco.getText();
-			String telefone = txtTelefone.getText();
-			rc.novoCliente(CPF, nome, email, endereco, telefone);
-
-			JOptionPane.showMessageDialog(null, "cadastramos");
+			c.setID(Long.parseLong(txtIDCli.getText()));
+			c.setCPF(txtCPF.getText());
+			c.setNome(txtNome.getText());
+			c.setEmail(txtEmail.getText());
+			c.setEndereco(txtEndereco.getText());
+			c.setTelefone(txtTelefone.getText());
 
 		} catch (Exception ex) {
 			System.out.println("Erro ao receber os dados");
 		}
-		return rc;
+		return c;
 	}
 
-	public void entityToBoundaryCli(String CPF) {
+	public void entityToBoundaryCli(Cliente c) {
 
-		if (rc.buscarCliente(CPF) != null) {
-
-			Cliente c = rc.buscarCliente(CPF);
-
-			txtID.setText(String.valueOf(c.getID()));
-			txtCPF.setText(String.valueOf(c.getCPF()));
-			txtNome.setText(String.valueOf(c.getNome()));
-			txtEmail.setText(String.valueOf(c.getEmail()));
-			txtTelefone.setText(String.valueOf(c.getTelefone()));
-			txtEndereco.setText(String.valueOf(c.getEndereco()));
-		}
-
-		else {
-			txtAvisos.setText("Cliente não cadastrado");
-		}
+		txtIDCli.setText(String.valueOf(c.getID()));
+		txtCPF.setText(String.valueOf(c.getCPF()));
+		txtNome.setText(String.valueOf(c.getNome()));
+		txtEmail.setText(String.valueOf(c.getEmail()));
+		txtTelefone.setText(String.valueOf(c.getTelefone()));
+		txtEndereco.setText(String.valueOf(c.getEndereco()));
 	}
 
 	public void contrato() {
@@ -191,41 +226,38 @@ public class RecepcionistaBoundary {
 
 		Scene scene = new Scene(pane, 700, 500);
 
-		Button novoConButton = new Button("Adicionar");
 		novoConButton.relocate(400, 50);
 		novoConButton.setMinWidth(200);
 		novoConButton.setOnMouseClicked(event -> boundaryToEntityCon());
 
-		Button buscarConButton = new Button("Buscar");
 		buscarConButton.relocate(400, 110);
 		buscarConButton.setMinWidth(200);
-		buscarConButton.setOnMouseClicked(event -> entityToBoundaryCon(String.valueOf(txtCPF.getText())));
 
-		Button mostrarTodosConButton = new Button("Exibir todos");
 		mostrarTodosConButton.relocate(400, 180);
 		mostrarTodosConButton.setMinWidth(200);
-		// mostrarTodosConButton.setOnMouseClicked(event -> mostrarTodosCon());
 
-		Button voltarButton = new Button("Voltar");
-		voltarButton.relocate(400, 250);
-		voltarButton.setMinWidth(200);
-		voltarButton.setOnMouseClicked(event -> voltar());
+		voltarButton2.relocate(400, 250);
+		voltarButton2.setMinWidth(200);
+		voltarButton2.setOnMouseClicked(event -> voltar());
 
-		Button buscarCliButton = new Button("Buscar");
-		buscarCliButton.relocate(285, 100);
-		buscarCliButton.setMinWidth(60);
-		buscarCliButton.setOnMouseClicked(event -> buscarCli(String.valueOf(txtCPF.getText())));
+		buscarCliConButton.relocate(285, 100);
+		buscarCliConButton.setMinWidth(60);
+		buscarCliConButton.setOnMouseClicked(event -> buscarCli(String.valueOf(txtCPF.getText())));
 
 		pane.getChildren().add(novoConButton);
 		pane.getChildren().add(buscarConButton);
 		pane.getChildren().add(mostrarTodosConButton);
-		pane.getChildren().add(buscarCliButton);
-		pane.getChildren().add(voltarButton);
+		pane.getChildren().add(buscarCliConButton);
+		pane.getChildren().add(voltarButton2);
+
+		novoConButton.setOnAction(this);
+		buscarConButton.setOnAction(this);
+		mostrarTodosConButton.setOnAction(this);
+		buscarCliConButton.setOnAction(this);
 
 		Label id = new Label("ID: ");
 		id.relocate(50, 50);
-		txtID.relocate(130, 50);
-		txtID.setText(String.valueOf(rc.getIDCon()));
+		txtIDCon.relocate(130, 50);
 
 		Label cpf = new Label("CPF: ");
 		cpf.relocate(50, 100);
@@ -252,7 +284,7 @@ public class RecepcionistaBoundary {
 		txtAvisos.setMinWidth(200);
 
 		pane.getChildren().add(id);
-		pane.getChildren().add(txtID);
+		pane.getChildren().add(txtIDCon);
 		pane.getChildren().add(cpf);
 		pane.getChildren().add(txtCPF);
 		pane.getChildren().add(dataCon);
@@ -270,49 +302,42 @@ public class RecepcionistaBoundary {
 
 	}
 
-	public RecepcionistaControl boundaryToEntityCon() {
+	public Contrato boundaryToEntityCon() {
+		Contrato c = new Contrato();
+
 		try {
 
-			String CPF = txtCPF.getText();
-			LocalDate dataContrato = LocalDate.parse(txtDataContrato.getText(), dtf);
-			int qtdParcelas = Integer.parseInt(txtqtdParcelas.getText());
-			double valorMes = Double.parseDouble(txtValorMes.getText());
-
-			double valorTotal = qtdParcelas * valorMes;
-
-			rc.novoContrato(CPF, dataContrato, qtdParcelas, valorMes, valorTotal);
-
-			entityToBoundaryCon(CPF);
+			c.setID(Long.parseLong(txtIDCon.getText()));
+			c.setCpf_cli(txtCPF.getText());
+			c.setDataContrato(LocalDate.parse(txtDataContrato.getText()));
+			c.setQtdParcelas(Integer.parseInt(txtqtdParcelas.getText()));
+			c.setValorMes(Double.parseDouble(txtValorMes.getText()));
+			c.setValorTotal(Double.parseDouble(txtValorTotal.getText()));
 
 		} catch (Exception ex) {
 			System.out.println("Erro ao receber os dados");
 		}
-		return rc;
+		return c;
 	}
 
-	public void entityToBoundaryCon(String CPF) {
+	public void entityToBoundaryCon(Contrato c) {
 
-		if (rc.buscarCliente(CPF) != null) {
-
-			Contrato c = rc.buscarContrato(CPF);
-
-			txtID.setText(String.valueOf(c.getID()));
+		try {
+			txtIDCon.setText(String.valueOf(c.getID()));
+			txtCPF.setText(String.valueOf(c.getCpf_cli()));
 			txtDataContrato.setText(String.valueOf(c.getDataContrato()));
 			txtqtdParcelas.setText(String.valueOf(c.getQtdParcelas()));
 			txtValorMes.setText(String.valueOf(c.getValorMes()));
 			txtValorTotal.setText(String.valueOf(c.getValorTotal()));
-		}
-
-		else {
+		} catch (Exception e) {
 			txtAvisos.setText("Contrato não existe");
 		}
-
 	}
 
 	public void buscarCli(String CPF) {
-		if (rc.buscarCliente(CPF) != null) {
+		if (control.buscarCliente(CPF) != null) {
 			JOptionPane.showMessageDialog(null, "Cliente localizado, prosseguir!");
-		} else if (rc.buscarCliente(CPF) == null) {
+		} else if (control.buscarCliente(CPF) == null) {
 			JOptionPane.showMessageDialog(null,
 					"Cliente não foi localizado \nCadastre o cliente e tente novamente depois");
 		}
@@ -321,8 +346,9 @@ public class RecepcionistaBoundary {
 	public void voltar() {
 		new RecepcionistaBoundary(stage);
 	}
-	
+
 	public void voltarInicio() {
 		new LoginBoundary(stage);
 	}
+
 }
