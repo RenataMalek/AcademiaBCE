@@ -6,7 +6,8 @@ import java.util.List;
 public class Pacotes {
 
 	long idPacote;
-	Modalidade modalidade;
+	long idModalidade;
+	long idAtividade;
 	List<Atividades> atividade = new ArrayList<Atividades>();
 
 	public long getIdPacote() {
@@ -17,15 +18,31 @@ public class Pacotes {
 		this.idPacote = idPacote;
 	}
 
-	public Modalidade getIdModalidade() {
-		return modalidade;
+	public List<Atividades> getAtividade() {
+		return atividade;
 	}
 
-	public void setModalidade(Modalidade modalidade) {
-		this.modalidade = modalidade;
+	public void setAtividade(List<Atividades> atividade) {
+		this.atividade = atividade;
 	}
 
-	public List<Atividades> getIdAtividade() {
+	public void setIdModalidade(long idModalidade) {
+		this.idModalidade = idModalidade;
+	}
+
+	public void setIdAtividade(long idAtividade) {
+		this.idAtividade = idAtividade;
+	}
+
+	public long getIdAtividade() {
+		return idAtividade;
+	}
+	
+	public long getIdModalidade() {
+		return idModalidade;
+	}
+
+	public List<Atividades> getIdAtividadeList() {
 		return atividade;
 	}
 

@@ -1,9 +1,5 @@
 package boundary;
 
-import javax.swing.JOptionPane;
-
-
-import control.ClienteControl;
 import control.LoginControl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,22 +36,20 @@ public class LoginBoundary {
 		bemVindo.relocate(260, 60);
 		bemVindo.setMinWidth(170);
 		bemVindo.setAlignment(Pos.CENTER);
-		
+
 		Label informacao = new Label("Digite seu codigo de acesso e escolha o usuario:");
 		informacao.relocate(200, 90);
 		informacao.setAlignment(Pos.CENTER);
-		
+
 		acesso = new TextField();
 		acesso.relocate(260, 150);
 		acesso.setMinWidth(170);
 
-		
 		tipoAcesso = new ComboBox<>();
 		tipoAcesso.relocate(260, 220);
 		tipoAcesso.setMinWidth(170);
 		carregarComboTipoUsuarios();
 
-		
 		Button clienteButton = new Button("Logar");
 		clienteButton.relocate(260, 290);
 		clienteButton.setMinWidth(170);
@@ -66,8 +60,7 @@ public class LoginBoundary {
 		pane.getChildren().add(acesso);
 		pane.getChildren().add(tipoAcesso);
 		pane.getChildren().add(clienteButton);
-		
-		
+
 		stage.setScene(scene);
 		stage.setTitle("Academia Login");
 		stage.show();
@@ -92,18 +85,17 @@ public class LoginBoundary {
 						new TreinadorBoundary(stage);
 					} else if (tipoAcessoSelecionado.equalsIgnoreCase("cliente")) {
 
-					/*	String CPF = acesso.getText();
-						ClienteControl cc = new ClienteControl();
-						if (cc.entrarAcademia(CPF)) {
-							JOptionPane.showMessageDialog(null, "Entrada Liberada!!");
-						} else {
-							JOptionPane.showMessageDialog(null, "Problemas na liberação, procure a recepcionista");
-						}
+						/*
+						 * String CPF = acesso.getText(); ClienteControl cc = new ClienteControl(); if
+						 * (cc.entrarAcademia(CPF)) { JOptionPane.showMessageDialog(null,
+						 * "Entrada Liberada!!"); } else { JOptionPane.showMessageDialog(null,
+						 * "Problemas na liberação, procure a recepcionista"); }
+						 * 
+						 * new LoginBoundary(stage);
+						 */
 
-						new LoginBoundary(stage); */
-					
 						System.out.println("Bem vindo cliente");
-						
+
 					}
 
 				} else {

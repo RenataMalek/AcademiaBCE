@@ -12,7 +12,6 @@ public class RecepcionistaControl {
 
 	public void novoCliente(Cliente c) {
 
-		
 		repDAO.adicionarCliente(c);
 
 	}

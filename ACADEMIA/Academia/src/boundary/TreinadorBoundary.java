@@ -1,9 +1,10 @@
 package boundary;
 
-import javax.swing.JOptionPane;
 import academia.Atividades;
 import academia.Modalidade;
 import control.TreinadorControl;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,7 +12,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class TreinadorBoundary {
+public class TreinadorBoundary implements EventHandler<ActionEvent> {
+
+	private TreinadorControl control = new TreinadorControl();
+
+	Button novaAtividadeButton = new Button("Adicionar");
+	Button buscarAtividButton = new Button("Buscar");
+	Button mostrarTodasAtivButton = new Button("Exibir todos");
+
+	Button novaModalidadeButton = new Button("Adicionar");
+	Button buscarModButton = new Button("Buscar");
+	Button mostrarTodasModButton = new Button("Exibir todos");
+	Button pacote = new Button("Pacote");
 
 	TextField txtID = new TextField();
 	TextField txtNome = new TextField();
@@ -39,20 +51,18 @@ public class TreinadorBoundary {
 
 		Scene scene = new Scene(pane, 700, 500);
 
-		Button novaAtividade = new Button("Adicionar nova atividade");
-		novaAtividade.relocate(220, 80);
-		novaAtividade.setMinWidth(200);
-		novaAtividade.setOnMouseClicked(event -> atividade());
+		Button atividade = new Button("Atividade");
+		atividade.relocate(220, 80);
+		atividade.setMinWidth(200);
+		atividade.setOnMouseClicked(event -> atividade());
 
-		Button novaModalidade = new Button("Adicionar nova modalidade");
-		novaModalidade.relocate(220, 140);
-		novaModalidade.setMinWidth(200);
-		novaModalidade.setOnMouseClicked(event -> modalidade());
-		
+		Button modalidade = new Button("Modalidade");
+		modalidade.relocate(220, 140);
+		modalidade.setMinWidth(200);
+		modalidade.setOnMouseClicked(event -> modalidade());
 
-		Button novoPacote = new Button("Criar Pacote");
-		novoPacote.relocate(220, 200);
-		novoPacote.setMinWidth(200);
+		pacote.relocate(220, 200);
+		pacote.setMinWidth(200);
 		// novoPacote.setOnMouseClicked(event -> pacote());
 
 		Button atribuirContrato = new Button("Atribuir Pacotes");
@@ -65,9 +75,9 @@ public class TreinadorBoundary {
 		voltar.setMinWidth(200);
 		voltar.setOnMouseClicked(event -> voltarInicio());
 
-		pane.getChildren().add(novaAtividade);
-		pane.getChildren().add(novaModalidade);
-		pane.getChildren().add(novoPacote);
+		pane.getChildren().add(atividade);
+		pane.getChildren().add(modalidade);
+		pane.getChildren().add(pacote);
 		pane.getChildren().add(atribuirContrato);
 		pane.getChildren().add(voltar);
 
@@ -81,20 +91,14 @@ public class TreinadorBoundary {
 
 		Scene scene = new Scene(pane, 700, 500);
 
-		Button novaAtividadeButton = new Button("Adicionar");
 		novaAtividadeButton.relocate(300, 50);
 		novaAtividadeButton.setMinWidth(200);
-		novaAtividadeButton.setOnMouseClicked(event -> boundaryToEntityAtiv());
 
-		Button buscarAtividButton = new Button("Buscar");
 		buscarAtividButton.relocate(300, 110);
 		buscarAtividButton.setMinWidth(200);
-		buscarAtividButton.setOnMouseClicked(event -> entityToBoundaryAtiv(Long.parseLong(txtID.getText())));
 
-		Button mostrarTodasAtivButton = new Button("Exibir todos");
 		mostrarTodasAtivButton.relocate(300, 180);
 		mostrarTodasAtivButton.setMinWidth(200);
-		// mostrarTodasAtivButton.setOnMouseClicked(event -> mostratTodosAtiv());
 
 		Button voltarButton = new Button("Voltar");
 		voltarButton.relocate(300, 250);
@@ -106,10 +110,13 @@ public class TreinadorBoundary {
 		pane.getChildren().add(mostrarTodasAtivButton);
 		pane.getChildren().add(voltarButton);
 
+		novaAtividadeButton.setOnAction(this);
+		buscarAtividButton.setOnAction(this);
+		mostrarTodasAtivButton.setOnAction(this);
+
 		Label id = new Label("ID: ");
 		id.relocate(50, 50);
 		txtID.relocate(110, 50);
-		txtID.setText(String.valueOf(tc.getIDAtiv()));
 
 		Label nome = new Label("Nome: ");
 		nome.relocate(50, 100);
@@ -147,40 +154,31 @@ public class TreinadorBoundary {
 
 	}
 
-	public TreinadorControl boundaryToEntityAtiv() {
+	public Atividades boundaryToEntityAtiv() {
+
+		Atividades a = new Atividades();
+
 		try {
 
-			String nome = txtNome.getText();
-			int qtdSecao = Integer.parseInt(txtQtdSecao.getText());
-			int qtdRepeticao = Integer.parseInt(txtQtdRepeticao.getText());
-			double tempoDuracao = Double.parseDouble(txtTempoDuracao.getText());
-
-			tc.criarAtividades(nome, qtdSecao, qtdRepeticao, tempoDuracao);
-
-			JOptionPane.showMessageDialog(null, "cadastramos");
+			a.setID(Long.parseLong(txtID.getText()));
+			a.setNome(txtNome.getText());
+			a.setQtdSecao(Integer.parseInt(txtQtdSecao.getText()));
+			a.setQtdRepeticao(Integer.parseInt(txtQtdRepeticao.getText()));
+			a.setTempoDuracao(Double.parseDouble(txtTempoDuracao.getText()));
 
 		} catch (Exception ex) {
 			System.out.println("Erro ao receber os dados");
 		}
-		return tc;
+		return a;
 	}
 
-	public void entityToBoundaryAtiv(long idAtiv) {
+	public void entityToBoundaryAtiv(Atividades a) {
 
-		if (tc.buscarAtividade(idAtiv) != null) {
-
-			Atividades a = tc.buscarAtividade(idAtiv);
-
-			txtID.setText(String.valueOf(a.getID()));
-			txtNome.setText(String.valueOf(a.getNome()));
-			txtQtdSecao.setText(String.valueOf(a.getQtdSecao()));
-			txtQtdRepeticao.setText(String.valueOf(a.getQtdRepeticao()));
-			txtTempoDuracao.setText(String.valueOf(a.getTempoDuracao()));
-		}
-
-		else {
-			txtAvisos.setText("Atividade não cadastrada");
-		}
+		txtID.setText(String.valueOf(a.getID()));
+		txtNome.setText(String.valueOf(a.getNome()));
+		txtQtdSecao.setText(String.valueOf(a.getQtdSecao()));
+		txtQtdRepeticao.setText(String.valueOf(a.getQtdRepeticao()));
+		txtTempoDuracao.setText(String.valueOf(a.getTempoDuracao()));
 	}
 
 	public void modalidade() {
@@ -189,17 +187,13 @@ public class TreinadorBoundary {
 
 		Scene scene = new Scene(pane, 700, 500);
 
-		Button novaModalidadeButton = new Button("Adicionar");
 		novaModalidadeButton.relocate(400, 50);
 		novaModalidadeButton.setMinWidth(200);
 		novaModalidadeButton.setOnMouseClicked(event -> boundaryToEntityMod());
 
-		Button buscarModButton = new Button("Buscar");
 		buscarModButton.relocate(400, 110);
 		buscarModButton.setMinWidth(200);
-		buscarModButton.setOnMouseClicked(event -> entityToBoundaryMod(Long.parseLong(txtID.getText())));
 
-		Button mostrarTodasModButton = new Button("Exibir todos");
 		mostrarTodasModButton.relocate(400, 180);
 		mostrarTodasModButton.setMinWidth(200);
 		// mostrarTodasModButton.setOnMouseClicked(event -> mostrarTodosMod());
@@ -214,10 +208,13 @@ public class TreinadorBoundary {
 		pane.getChildren().add(mostrarTodasModButton);
 		pane.getChildren().add(voltarButton);
 
+		novaModalidadeButton.setOnAction(this);
+		buscarModButton.setOnAction(this);
+		mostrarTodasModButton.setOnAction(this);
+
 		Label id = new Label("ID: ");
 		id.relocate(50, 50);
 		txtID.relocate(130, 50);
-		txtID.setText(String.valueOf(tc.getIDMod()));
 
 		Label tipo = new Label("Tipo: ");
 		tipo.relocate(50, 100);
@@ -249,35 +246,53 @@ public class TreinadorBoundary {
 
 	}
 
-	public TreinadorControl boundaryToEntityMod() {
+	public Modalidade boundaryToEntityMod() {
+
+		Modalidade m = new Modalidade();
+
 		try {
-
-			String nivel = txtNivel.getText();
-			String tipo = txtTipo.getText();
-			int qtdAtividades = Integer.parseInt(txtQtdAtividades.getText());
-
-			tc.criarModalidades(nivel, tipo, qtdAtividades);
+			m.setID(Long.parseLong(txtID.getText()));
+			m.setNivel(txtNivel.getText());
+			m.setTipo(txtTipo.getText());
+			m.setQtdAtividades(Integer.parseInt(txtQtdAtividades.getText()));
 
 		} catch (Exception ex) {
 			System.out.println("Erro ao receber os dados");
 		}
-		return tc;
+		return m;
 	}
 
-	public void entityToBoundaryMod(long idMod) {
+	public void entityToBoundaryMod(Modalidade m) {
 
-		if (tc.buscarAtividade(idMod) != null) {
+		txtID.setText(String.valueOf(m.getID()));
+		txtTipo.setText(String.valueOf(m.getTipo()));
+		txtNivel.setText(String.valueOf(m.getNivel()));
+		txtQtdAtividades.setText(String.valueOf(m.getQtdAtividades()));
 
-			Modalidade m = new Modalidade();
+	}
 
-			txtID.setText(String.valueOf(m.getID()));
-			txtTipo.setText(String.valueOf(m.getTipo()));
-			txtNivel.setText(String.valueOf(m.getNivel()));
-			txtQtdAtividades.setText(String.valueOf(m.getQtdAtividades()));
-		}
+	@Override
+	public void handle(ActionEvent e) {
 
-		else {
-			txtAvisos.setText("Modalidade não existe");
+		if (e.getTarget() == novaAtividadeButton) {
+			Atividades a = boundaryToEntityAtiv();
+			control.criarAtividades(a);
+			;
+		} else if (e.getTarget() == buscarAtividButton) {
+			try {
+				long idAtiv = Long.parseLong(txtID.getText());
+				Atividades a = control.buscarAtividade(idAtiv);
+				entityToBoundaryAtiv(a);
+			} catch (Exception f) {
+				System.out.println("Atividade nao existe");
+			}
+		} else if (e.getTarget() == novaModalidadeButton) {
+			Modalidade m = boundaryToEntityMod();
+			control.criarModalidades(m);
+		} else if (e.getTarget() == buscarModButton) {
+			long idMod = Long.parseLong(txtID.getText());
+			Modalidade m = control.buscarModalidade(idMod);
+			entityToBoundaryMod(m);
 		}
 
 	}
@@ -285,7 +300,7 @@ public class TreinadorBoundary {
 	public void voltar() {
 		new TreinadorBoundary(stage);
 	}
-	
+
 	public void voltarInicio() {
 		new LoginBoundary(stage);
 	}

@@ -1,37 +1,21 @@
 package dao;
 
-import academia.Treinador;
+import academia.Atividades;
+import academia.Modalidade;
+import academia.Pacotes;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+public interface TreinadorDAO {
 
-public class TreinadorDAO {
+	void criarModalidades(Modalidade m);
 
-    private Connection connection;
+	void criarAtividades(Atividades a);
 
-    public TreinadorDAO() {
-        try {
-            this.connection = new ConexaoDAO().getConnection();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+	void montarPacote(Pacotes p);
 
-    public Treinador buscarPorCodigoAcesso(String codigoAcesso) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("select * from treinador where codigoAcesso = ?");
-        preparedStatement.setString(1, codigoAcesso);
+	Modalidade buscarModalidade(long idMod);
 
-        ResultSet resultSet = preparedStatement.executeQuery();
+	Atividades buscarAtividade(long idAtiv);
 
-        if (resultSet.next()) {
-            Treinador treinador = new Treinador(resultSet.getLong("id_treinador"),
-                    resultSet.getString("nome"), resultSet.getString("cpf"), resultSet.getString("telefone"),
-                    resultSet.getString("codigoAcesso"));
-            return treinador;
-        } else {
-            return null;
-        }
-    }
+	Pacotes buscarPacote(long idPac);
+
 }

@@ -95,13 +95,58 @@ public class RecepcionistaDAOImp implements RecepcionistaDAO {
 	@Override
 	public void adicionarContrato(Contrato c) {
 
-		
-		
+		try {
+
+			String sql = "INSERT INTO contrato (ID_CONTRATO, CPF_CLIENTE_FK, DATA_CONTRATO, VALOR_MENSAL_CONTRATO, PARCELAS, QTD_TREINOS)"
+					+ "VALUES (0, ?, ?, ?, ?, ?)";
+			PreparedStatement stm = connection.prepareStatement(sql);
+			stm.setString(1, c.getCpf_cli());
+			stm.setDate(2, java.sql.Date.valueOf(c.getDataContrato()));
+			stm.setDouble(3, c.getValorMes());
+			stm.setInt(4, c.getQtdParcelas());
+			stm.setInt(5, c.getQtdTreinos());
+
+			stm.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
 	public Contrato pesquisarPorCPFCon(String CPF) {
-		// TODO Auto-generated method stub
+
+		try {
+			String sql = "SELECT * FROM contrato WHERE CPF_CLIENTE_FK like ?";
+
+			PreparedStatement stm = connection.prepareStatement(sql);
+
+			stm.setString(1, "%" + CPF + "%");
+			ResultSet rs = stm.executeQuery();
+			Contrato c = new Contrato();
+
+			if (rs.next()) {
+
+				c.setID(rs.getLong("ID_CONTRATO"));
+				c.setCpf_cli(rs.getString("ID_CLIENTE_FK"));
+				c.setDataContrato(rs.getDate("DATA_CONTRATO").toLocalDate());
+				c.setValorMes(rs.getDouble("VALOR_MENSAL_CONTRATO"));
+				c.setQtdParcelas(rs.getInt("PARCELAS"));
+				c.setQtdTreinos(rs.getInt("QTD_TREINOS"));
+
+				c.setValorTotal(c.getValorMes() * c.getQtdParcelas());
+
+				return c;
+			}
+
+			connection.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 		return null;
+
 	}
 }

@@ -27,6 +27,7 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 	TextField txtEmail = new TextField();
 	TextField txtTelefone = new TextField();
 	TextField txtEndereco = new TextField();
+	TextField txtQtdTreinos = new TextField();
 
 	TextField txtAvisos = new TextField();
 
@@ -279,7 +280,11 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 		Label valorTotal = new Label("Valor total: ");
 		valorTotal.relocate(50, 300);
 		txtValorTotal.relocate(130, 300);
-
+		
+		Label qtdTreinos = new Label("Qtd treinos: ");
+		qtdTreinos.relocate(50, 350);
+		txtQtdTreinos.relocate(130, 350);
+		
 		txtAvisos.relocate(400, 300);
 		txtAvisos.setMinWidth(200);
 

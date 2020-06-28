@@ -10,6 +10,8 @@ public class Contrato {
 	String cpf_cli;
 
 	int qtdParcelas;
+	int qtdTreinos;
+
 	double valorMes;
 	double valorTotal;
 	boolean acesso;
@@ -25,10 +27,11 @@ public class Contrato {
 	public String getCpf_cli() {
 		return cpf_cli;
 	}
-	
+
 	public void setCpf_cli(String cpf_cli) {
 		this.cpf_cli = cpf_cli;
 	}
+
 	public LocalDate getDataContrato() {
 		return dataContrato;
 	}
@@ -43,6 +46,14 @@ public class Contrato {
 
 	public void setQtdParcelas(int qtdParcelas) {
 		this.qtdParcelas = qtdParcelas;
+	}
+
+	public int getQtdTreinos() {
+		return qtdTreinos;
+	}
+
+	public void setQtdTreinos(int qtdTreinos) {
+		this.qtdTreinos = qtdTreinos;
 	}
 
 	public double getValorMes() {
