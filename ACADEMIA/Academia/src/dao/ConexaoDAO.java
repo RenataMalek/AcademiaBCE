@@ -11,7 +11,7 @@ public class ConexaoDAO {
 	public Connection getConnection() throws ClassNotFoundException, SQLException {
 
 
-		final String URL = "jdbc:mysql://localhost:3306/academia?useTimezone=true&serverTimezone=UTC";
+		final String URL = "jdbc:mysql://localhost:3306/academia?useTimezone=true&serverTimezone=UTC&allowMultiQueries=true";
 		final String USER = "root";
 		final String PASS = "123456";
 		

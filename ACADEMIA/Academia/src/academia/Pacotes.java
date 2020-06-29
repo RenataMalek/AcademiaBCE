@@ -5,18 +5,9 @@ import java.util.List;
 
 public class Pacotes {
 
-	long idPacote;
 	long idModalidade;
 	long idAtividade;
 	List<Atividades> atividade = new ArrayList<Atividades>();
-
-	public long getIdPacote() {
-		return idPacote;
-	}
-
-	public void setIdPacote(long idPacote) {
-		this.idPacote = idPacote;
-	}
 
 	public List<Atividades> getAtividade() {
 		return atividade;
@@ -37,7 +28,7 @@ public class Pacotes {
 	public long getIdAtividade() {
 		return idAtividade;
 	}
-	
+
 	public long getIdModalidade() {
 		return idModalidade;
 	}

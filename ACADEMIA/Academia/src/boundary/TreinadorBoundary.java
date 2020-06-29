@@ -1,20 +1,31 @@
 package boundary;
 
+import java.time.LocalDate;
+
 import academia.Atividades;
 import academia.Modalidade;
+import academia.Pacotes;
 import control.TreinadorControl;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class TreinadorBoundary implements EventHandler<ActionEvent> {
 
-	private TreinadorControl control = new TreinadorControl();
+	TreinadorControl tc = new TreinadorControl();
+
+	private Stage stage;
+
+	private TableView<Modalidade> tableViewMod = new TableView<>(tc.getListaM());
+	private TableView<Atividades> tableViewAtiv = new TableView<>(tc.getListaA());
 
 	Button novaAtividadeButton = new Button("Adicionar");
 	Button buscarAtividButton = new Button("Buscar");
@@ -23,7 +34,10 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 	Button novaModalidadeButton = new Button("Adicionar");
 	Button buscarModButton = new Button("Buscar");
 	Button mostrarTodasModButton = new Button("Exibir todos");
-	Button pacote = new Button("Pacote");
+
+	Button novoPacoteButton = new Button("Adicionar");
+	Button buscarPacoteButton = new Button("Buscar");
+	Button mostrarTodosPacButton = new Button("Exibir todos");
 
 	TextField txtID = new TextField();
 	TextField txtNome = new TextField();
@@ -37,9 +51,49 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 	TextField txtNivel = new TextField();
 	TextField txtQtdAtividades = new TextField();
 
-	TreinadorControl tc = new TreinadorControl();
+	TextField txtPcMod = new TextField();
+	TextField txtPcAtiv = new TextField();
 
-	private Stage stage;
+	public void generateTableMod() {
+		
+		TableColumn<Modalidade, Long> colIDM = new TableColumn<>("IDM");
+		colIDM.setCellValueFactory(new PropertyValueFactory<Modalidade, Long>("ID"));
+		
+		TableColumn<Modalidade, String> colTipo = new TableColumn<>("Tipo");
+		colTipo.setCellValueFactory(new PropertyValueFactory<Modalidade, String>("tipo"));
+		
+		TableColumn<Modalidade, String> colNivel = new TableColumn<>("Nivel");
+		colNivel.setCellValueFactory(new PropertyValueFactory<Modalidade, String>("nivel"));
+		
+		TableColumn<Modalidade, Integer> colQtdAtiv = new TableColumn<>("QtdAtividades");
+		colQtdAtiv.setCellValueFactory(new PropertyValueFactory<Modalidade, Integer>("qtdAtividades"));
+		
+
+		tableViewMod.getColumns().addAll(colIDM, colTipo, colNivel, colQtdAtiv);		
+	}
+
+	public void generateTableAtiv() {
+		
+		TableColumn<Atividades, Integer> colIDA = new TableColumn<>("IDA");
+		colIDA.setCellValueFactory(new PropertyValueFactory<Atividades, Integer>("ID"));
+		
+		TableColumn<Atividades, String> colNome = new TableColumn<>("Nome");
+		colNome.setCellValueFactory(new PropertyValueFactory<Atividades, String>("Nome"));
+		
+		TableColumn<Atividades, Integer> colQtdSecao = new TableColumn<>("QtdSecao");
+		colQtdSecao.setCellValueFactory(new PropertyValueFactory<Atividades, Integer>("qtdSecao"));
+		
+		TableColumn<Atividades, Integer> colQtdRepeticao = new TableColumn<>("QtdRepeticao");
+		colQtdRepeticao.setCellValueFactory(new PropertyValueFactory<Atividades, Integer>("qtdRepeticao"));
+		
+		TableColumn<Atividades, Double> colTempo = new TableColumn<>("TempoDuracao");
+		colTempo.setCellValueFactory(new PropertyValueFactory<Atividades, Double>("tempoDuracao"));
+		
+
+		tableViewAtiv.getColumns().addAll(colIDA, colNome, colQtdSecao, colQtdRepeticao, colTempo);	
+		
+
+	}
 
 	public TreinadorBoundary(Stage stage) {
 		this.stage = stage;
@@ -61,9 +115,10 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 		modalidade.setMinWidth(200);
 		modalidade.setOnMouseClicked(event -> modalidade());
 
+		Button pacote = new Button("Pacote");
 		pacote.relocate(220, 200);
 		pacote.setMinWidth(200);
-		// novoPacote.setOnMouseClicked(event -> pacote());
+		pacote.setOnMouseClicked(event -> pacote());
 
 		Button atribuirContrato = new Button("Atribuir Pacotes");
 		atribuirContrato.relocate(220, 260);
@@ -271,28 +326,123 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 
 	}
 
+	public void pacote() {
+
+		Pane pane = new Pane();
+
+		generateTableMod();
+		tc.buscaTableMod();
+		
+		generateTableAtiv();
+		tc.buscaTableAtiv();
+		
+		Scene scene = new Scene(pane, 800, 600);
+
+		novoPacoteButton.relocate(295, 10);
+		novoPacoteButton.setMinWidth(200);
+
+		buscarPacoteButton.relocate(295, 70);
+		buscarPacoteButton.setMinWidth(200);
+
+		mostrarTodosPacButton.relocate(295, 130);
+		mostrarTodosPacButton.setMinWidth(200);
+
+		Button voltarButton = new Button("Voltar");
+		voltarButton.relocate(295, 190);
+		voltarButton.setMinWidth(200);
+		voltarButton.setOnMouseClicked(event -> voltar());
+
+		pane.getChildren().add(novoPacoteButton);
+		pane.getChildren().add(buscarPacoteButton);
+		pane.getChildren().add(mostrarTodosPacButton);
+		pane.getChildren().add(voltarButton);
+
+		novoPacoteButton.setOnAction(this);
+		buscarPacoteButton.setOnAction(this);
+		mostrarTodosPacButton.setOnAction(this);
+
+		Label pctMod = new Label("Modalidade: ");
+		pctMod.relocate(15, 70);
+		txtPcMod.relocate(90, 70);
+
+		Label pctAtiv = new Label("Atividade: ");
+		pctAtiv.relocate(15, 130);
+		txtPcAtiv.relocate(90, 130);
+
+		tableViewMod.relocate(15, 295);
+		tableViewMod.setMaxSize(400, 300);
+
+		tableViewAtiv.relocate(400, 295);
+		tableViewAtiv.setMaxSize(400, 300);
+
+		pane.getChildren().add(pctMod);
+		pane.getChildren().add(txtPcMod);
+		pane.getChildren().add(pctAtiv);
+		pane.getChildren().add(txtPcAtiv);
+		pane.getChildren().add(tableViewMod);
+		pane.getChildren().add(tableViewAtiv);
+
+		stage.setScene(scene);
+		stage.setTitle("Novas Atividades");
+		stage.show();
+
+	}
+
+	public Pacotes boundaryToEntityPacote() {
+
+		Pacotes p = new Pacotes();
+
+		try {
+
+			p.setIdModalidade(Long.parseLong(txtPcMod.getText()));
+			p.setIdAtividade(Long.parseLong(txtPcAtiv.getText()));
+
+		} catch (Exception ex) {
+			System.out.println("Erro ao receber os dados");
+		}
+		return p;
+	}
+
+	public void entityToBoundaryPacote(Pacotes p) {
+
+		txtPcMod.setText(String.valueOf(p.getIdModalidade()));
+		txtPcAtiv.setText(String.valueOf(p.getIdAtividade()));
+	}
+
 	@Override
 	public void handle(ActionEvent e) {
 
 		if (e.getTarget() == novaAtividadeButton) {
 			Atividades a = boundaryToEntityAtiv();
-			control.criarAtividades(a);
-			;
+			tc.criarAtividades(a);
+
 		} else if (e.getTarget() == buscarAtividButton) {
 			try {
 				long idAtiv = Long.parseLong(txtID.getText());
-				Atividades a = control.buscarAtividade(idAtiv);
+				Atividades a = tc.buscarAtividade(idAtiv);
 				entityToBoundaryAtiv(a);
 			} catch (Exception f) {
 				System.out.println("Atividade nao existe");
 			}
 		} else if (e.getTarget() == novaModalidadeButton) {
 			Modalidade m = boundaryToEntityMod();
-			control.criarModalidades(m);
+			tc.criarModalidades(m);
 		} else if (e.getTarget() == buscarModButton) {
 			long idMod = Long.parseLong(txtID.getText());
-			Modalidade m = control.buscarModalidade(idMod);
+			Modalidade m = tc.buscarModalidade(idMod);
 			entityToBoundaryMod(m);
+		} else if (e.getTarget() == novoPacoteButton) {
+			Pacotes p = boundaryToEntityPacote();
+			tc.montarPacotes(p);
+
+		} else if (e.getTarget() == buscarPacoteButton) {
+			try {
+				long idMod = Long.parseLong(txtPcMod.getText());
+				Pacotes p = tc.buscarPacote(idMod);
+				entityToBoundaryPacote(p);
+			} catch (Exception g) {
+				System.out.println("Pacote não existe");
+			}
 		}
 
 	}

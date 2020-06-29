@@ -166,10 +166,7 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 	@Override
 	public void handle(ActionEvent e) {
 
-		
-
 		if (e.getTarget() == novoCliButton) {
-			System.out.println("chegamos aqui");
 			Cliente c = boundaryToEntityCli();
 			control.novoCliente(c);
 		} else if (e.getTarget() == buscarCliButton) {
@@ -280,11 +277,11 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 		Label valorTotal = new Label("Valor total: ");
 		valorTotal.relocate(50, 300);
 		txtValorTotal.relocate(130, 300);
-		
+
 		Label qtdTreinos = new Label("Qtd treinos: ");
 		qtdTreinos.relocate(50, 350);
 		txtQtdTreinos.relocate(130, 350);
-		
+
 		txtAvisos.relocate(400, 300);
 		txtAvisos.setMinWidth(200);
 
@@ -314,7 +311,10 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 
 			c.setID(Long.parseLong(txtIDCon.getText()));
 			c.setCpf_cli(txtCPF.getText());
-			c.setDataContrato(LocalDate.parse(txtDataContrato.getText()));
+
+			LocalDate dt = LocalDate.parse(txtDataContrato.getText(), dtf);
+			c.setDataContrato(dt);
+
 			c.setQtdParcelas(Integer.parseInt(txtqtdParcelas.getText()));
 			c.setValorMes(Double.parseDouble(txtValorMes.getText()));
 			c.setValorTotal(Double.parseDouble(txtValorTotal.getText()));
@@ -340,12 +340,15 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 	}
 
 	public void buscarCli(String CPF) {
-		if (control.buscarCliente(CPF) != null) {
-			JOptionPane.showMessageDialog(null, "Cliente localizado, prosseguir!");
-		} else if (control.buscarCliente(CPF) == null) {
-			JOptionPane.showMessageDialog(null,
-					"Cliente não foi localizado \nCadastre o cliente e tente novamente depois");
+
+		Cliente c = control.buscarCliente(CPF);
+
+		if (c != null) {
+			JOptionPane.showMessageDialog(null, "Cliente possui cadastro, prosseguir");
+		} else {
+			JOptionPane.showMessageDialog(null, "Cliente não localizado \nRealize seu cadastro para prosseguir");
 		}
+
 	}
 
 	public void voltar() {

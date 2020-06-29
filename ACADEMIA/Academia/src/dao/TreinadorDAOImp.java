@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TreinadorDAOImp implements TreinadorDAO {
 
@@ -126,6 +128,40 @@ public class TreinadorDAOImp implements TreinadorDAO {
 	}
 
 	@Override
+	public List<Modalidade> buscaTableMod(long idMod) {
+
+		List<Modalidade> lista = new ArrayList<Modalidade>();
+
+		try {
+			String sqlM = "SELECT * FROM treino";
+
+			PreparedStatement stm = connection.prepareStatement(sqlM);
+
+			//stm.setString(1, "%" + idMod + "%");
+			ResultSet rsM = stm.executeQuery();
+
+			Modalidade m = new Modalidade();
+
+			while (rsM.next()) {
+				m.setID(rsM.getLong("ID_TREINO"));
+				m.setTipo(rsM.getString("TIPO_TREINO"));
+				m.setNivel(rsM.getString("NIVEL_TREINO"));
+				m.setQtdAtividades(rsM.getInt("QTD_ATIVD_TREINO"));
+
+				lista.add(m);
+			}
+
+			// connection.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return lista;
+
+	}
+
+	@Override
 	public Atividades buscarAtividade(long idAtiv) {
 		try {
 
@@ -159,15 +195,51 @@ public class TreinadorDAOImp implements TreinadorDAO {
 	}
 
 	@Override
-	public Pacotes buscarPacote(long idPac) {
+	public List<Atividades> buscaTableAtiv(long idAtiv) {
+
+		List<Atividades> lista = new ArrayList<Atividades>();
 
 		try {
 
-			String sql = "SELECT * FROM atividades_treino WHERE ID_PACOTE like ?";
+			String sql = "SELECT * FROM atividades";
+
+			PreparedStatement stm = connection.prepareStatement(sql);
+			ResultSet rs = stm.executeQuery();
+
+		//	stm.setString(1, "%" + idAtiv + "%");
+
+			Atividades a = new Atividades();
+			
+			
+			while (rs.next()) {
+				a.setID(rs.getLong("ID_ATIVIDADE"));
+				a.setNome(rs.getString("NOME_ATIVIDADE"));
+				a.setQtdSecao(rs.getInt("QTD_SECAO_ATIVIDADE"));
+				a.setQtdRepeticao(rs.getInt("QTD_REPETICAO_ATIVIDADE"));
+				a.setTempoDuracao(rs.getDouble("TEMPO_DURACAO_ATIVIDADE"));
+
+				lista.add(a);
+			}
+
+			connection.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return lista;
+	}
+
+	@Override
+	public Pacotes buscarPacote(long idMod) {
+
+		try {
+
+			String sql = "SELECT * FROM atividades_treino WHERE ID_TREINO_FK like ?";
 
 			PreparedStatement stm = connection.prepareStatement(sql);
 
-			stm.setString(1, "%" + idPac + "%");
+			stm.setString(1, "%" + idMod + "%");
 			ResultSet rs = stm.executeQuery();
 
 			Pacotes p = new Pacotes();
@@ -188,4 +260,5 @@ public class TreinadorDAOImp implements TreinadorDAO {
 		return null;
 
 	}
+
 }

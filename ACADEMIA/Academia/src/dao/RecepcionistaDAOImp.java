@@ -129,7 +129,7 @@ public class RecepcionistaDAOImp implements RecepcionistaDAO {
 			if (rs.next()) {
 
 				c.setID(rs.getLong("ID_CONTRATO"));
-				c.setCpf_cli(rs.getString("ID_CLIENTE_FK"));
+				c.setCpf_cli(rs.getString("CPF_CLIENTE_FK"));
 				c.setDataContrato(rs.getDate("DATA_CONTRATO").toLocalDate());
 				c.setValorMes(rs.getDouble("VALOR_MENSAL_CONTRATO"));
 				c.setQtdParcelas(rs.getInt("PARCELAS"));

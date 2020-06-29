@@ -7,12 +7,12 @@ public class Modalidade {
 	String nivel;
 	int qtdAtividades;
 
-	public int getQtdAtividades() {
-		return qtdAtividades;
-	}
-
 	public void setQtdAtividades(int qtdAtividades) {
 		this.qtdAtividades = qtdAtividades;
+	}
+
+	public int getQtdAtividades() {
+		return qtdAtividades;
 	}
 
 	public long getID() {
