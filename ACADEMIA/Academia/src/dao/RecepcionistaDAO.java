@@ -11,5 +11,7 @@ public interface RecepcionistaDAO {
 	
 	void adicionarContrato(Contrato c);
 	
+	void gerarCobranca(Contrato c);
+	
 	Contrato pesquisarPorCPFCon(String CPF);
 }

@@ -8,10 +8,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class RecepcionistaDAOImp implements RecepcionistaDAO {
 
 	private Connection connection;
+
+	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	public RecepcionistaDAOImp() {
 		try {
@@ -107,9 +111,60 @@ public class RecepcionistaDAOImp implements RecepcionistaDAO {
 			stm.setInt(5, c.getQtdTreinos());
 
 			stm.executeUpdate();
+			
+			gerarCobranca(c);
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public void gerarCobranca(Contrato c) {
+
+		int aux = c.getQtdParcelas();
+		LocalDate ld;
+		LocalDate proximo = c.getDataContrato();
+		int cont = 1;
+
+		for (int i = 0; i < aux; i++) {
+
+			try {
+				
+				ld = proximo;
+				
+				int dia = ld.getDayOfMonth();
+				int mes = ld.getMonthValue();
+				int ano = ld.getYear();
+				
+				String m = "/";
+				
+				if (mes != 10 && mes != 11 && mes != 12) {
+					m = "/0";
+				}
+
+				String data = dia + m + mes + "/" + ano;
+
+				proximo = LocalDate.parse(data, dtf);
+
+				String sql = "INSERT INTO cobranca (ID_COBRANCA, ID_CONTRATO_FK, DIA_VCTO_COBRANCA, VALOR_COBRANCA, NUM_PARCELA_COBRANCA, PAGO_COBRANCA)"
+						+ "VALUES (0, ?, ?, ?, ?, 1)";
+				PreparedStatement stm = connection.prepareStatement(sql);
+				stm.setLong(1, c.getID());
+				stm.setDate(2, java.sql.Date.valueOf(proximo));
+				stm.setDouble(3, c.getValorMes());
+				stm.setInt(4, cont );
+
+				stm.executeUpdate();
+				
+				cont++;
+				
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 		}
 
 	}

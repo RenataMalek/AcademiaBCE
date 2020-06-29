@@ -10,10 +10,13 @@ import academia.Contrato;
 import control.RecepcionistaControl;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -66,6 +69,14 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 	private void construirTela(Stage stage) {
 		Pane pane = new Pane();
 
+		Image image = new Image("file:images/Laranja_fundo.png");
+		ImageView mv = new ImageView(image);
+
+		Group root = new Group();
+		root.getChildren().addAll(mv);
+
+		pane.getChildren().addAll(root);
+
 		Scene scene = new Scene(pane, 700, 500);
 
 		manterCliButton.relocate(220, 110);
@@ -79,6 +90,13 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 		voltar.relocate(220, 330);
 		voltar.setMinWidth(200);
 		voltar.setOnMouseClicked(event -> voltarInicio());
+
+		manterCliButton.setStyle(
+				"-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
+		manterConButton.setStyle(
+				"-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
+		voltar.setStyle(
+				"-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
 
 		pane.getChildren().add(manterCliButton);
 		pane.getChildren().add(manterConButton);

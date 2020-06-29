@@ -130,25 +130,22 @@ public class TreinadorDAOImp implements TreinadorDAO {
 	@Override
 	public List<Modalidade> buscaTableMod(long idMod) {
 
-		List<Modalidade> lista = new ArrayList<Modalidade>();
+		String sqlM = "SELECT * FROM treino";
 
+		List<Modalidade> listaM = new ArrayList<Modalidade>();
 		try {
-			String sqlM = "SELECT * FROM treino";
 
 			PreparedStatement stm = connection.prepareStatement(sqlM);
 
-			//stm.setString(1, "%" + idMod + "%");
 			ResultSet rsM = stm.executeQuery();
 
-			Modalidade m = new Modalidade();
-
 			while (rsM.next()) {
+				Modalidade m = new Modalidade();
 				m.setID(rsM.getLong("ID_TREINO"));
 				m.setTipo(rsM.getString("TIPO_TREINO"));
 				m.setNivel(rsM.getString("NIVEL_TREINO"));
 				m.setQtdAtividades(rsM.getInt("QTD_ATIVD_TREINO"));
-
-				lista.add(m);
+				listaM.add(m);
 			}
 
 			// connection.close();
@@ -157,7 +154,7 @@ public class TreinadorDAOImp implements TreinadorDAO {
 			e.printStackTrace();
 		}
 
-		return lista;
+		return listaM;
 
 	}
 
@@ -206,12 +203,11 @@ public class TreinadorDAOImp implements TreinadorDAO {
 			PreparedStatement stm = connection.prepareStatement(sql);
 			ResultSet rs = stm.executeQuery();
 
-		//	stm.setString(1, "%" + idAtiv + "%");
+			// stm.setString(1, "%" + idAtiv + "%");
 
-			Atividades a = new Atividades();
-			
-			
+
 			while (rs.next()) {
+				Atividades a = new Atividades();
 				a.setID(rs.getLong("ID_ATIVIDADE"));
 				a.setNome(rs.getString("NOME_ATIVIDADE"));
 				a.setQtdSecao(rs.getInt("QTD_SECAO_ATIVIDADE"));
@@ -221,7 +217,7 @@ public class TreinadorDAOImp implements TreinadorDAO {
 				lista.add(a);
 			}
 
-			connection.close();
+			//connection.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -245,8 +241,8 @@ public class TreinadorDAOImp implements TreinadorDAO {
 			Pacotes p = new Pacotes();
 
 			if (rs.next()) {
-				p.setIdModalidade(rs.getLong("ID_TREINO"));
-				p.setIdAtividade(rs.getLong("ID_ATIVIDADE"));
+				p.setIdModalidade(rs.getLong("ID_TREINO_FK"));
+				p.setIdAtividade(rs.getLong("ID_ATIVIDADE_FK"));
 
 				return p;
 			}

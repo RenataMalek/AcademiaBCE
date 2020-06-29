@@ -1,13 +1,14 @@
 package boundary;
 
-import java.time.LocalDate;
-
 import academia.Atividades;
 import academia.Modalidade;
 import academia.Pacotes;
 import control.TreinadorControl;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,6 +16,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -55,43 +58,56 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 	TextField txtPcAtiv = new TextField();
 
 	public void generateTableMod() {
-		
+
 		TableColumn<Modalidade, Long> colIDM = new TableColumn<>("IDM");
 		colIDM.setCellValueFactory(new PropertyValueFactory<Modalidade, Long>("ID"));
-		
+
 		TableColumn<Modalidade, String> colTipo = new TableColumn<>("Tipo");
 		colTipo.setCellValueFactory(new PropertyValueFactory<Modalidade, String>("tipo"));
-		
+
 		TableColumn<Modalidade, String> colNivel = new TableColumn<>("Nivel");
 		colNivel.setCellValueFactory(new PropertyValueFactory<Modalidade, String>("nivel"));
-		
+
 		TableColumn<Modalidade, Integer> colQtdAtiv = new TableColumn<>("QtdAtividades");
 		colQtdAtiv.setCellValueFactory(new PropertyValueFactory<Modalidade, Integer>("qtdAtividades"));
-		
 
-		tableViewMod.getColumns().addAll(colIDM, colTipo, colNivel, colQtdAtiv);		
+		tableViewMod.getColumns().addAll(colIDM, colTipo, colNivel, colQtdAtiv);
+		tableViewMod.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Modalidade>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Modalidade> m, Modalidade antigo, Modalidade novo) {
+				entityToBoundaryTBMod(novo);
+			}
+
+		});
 	}
 
 	public void generateTableAtiv() {
-		
+
 		TableColumn<Atividades, Integer> colIDA = new TableColumn<>("IDA");
 		colIDA.setCellValueFactory(new PropertyValueFactory<Atividades, Integer>("ID"));
-		
+
 		TableColumn<Atividades, String> colNome = new TableColumn<>("Nome");
 		colNome.setCellValueFactory(new PropertyValueFactory<Atividades, String>("Nome"));
-		
+
 		TableColumn<Atividades, Integer> colQtdSecao = new TableColumn<>("QtdSecao");
 		colQtdSecao.setCellValueFactory(new PropertyValueFactory<Atividades, Integer>("qtdSecao"));
-		
+
 		TableColumn<Atividades, Integer> colQtdRepeticao = new TableColumn<>("QtdRepeticao");
 		colQtdRepeticao.setCellValueFactory(new PropertyValueFactory<Atividades, Integer>("qtdRepeticao"));
-		
+
 		TableColumn<Atividades, Double> colTempo = new TableColumn<>("TempoDuracao");
 		colTempo.setCellValueFactory(new PropertyValueFactory<Atividades, Double>("tempoDuracao"));
-		
 
-		tableViewAtiv.getColumns().addAll(colIDA, colNome, colQtdSecao, colQtdRepeticao, colTempo);	
-		
+		tableViewAtiv.getColumns().addAll(colIDA, colNome, colQtdSecao, colQtdRepeticao, colTempo);
+		tableViewAtiv.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Atividades>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Atividades> a, Atividades antigo, Atividades novo) {
+				entityToBoundaryTBAtiv(novo);
+			}
+
+		});
 
 	}
 
@@ -102,6 +118,14 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 
 	private void construirTela(Stage stage) {
 		Pane pane = new Pane();
+		
+		Image image =new Image("file:images/Verde_fundo.png");
+		ImageView mv=new ImageView(image);
+				
+		Group root=new Group();
+		root.getChildren().addAll(mv);
+					
+		pane.getChildren().addAll(root);
 
 		Scene scene = new Scene(pane, 700, 500);
 
@@ -130,6 +154,12 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 		voltar.setMinWidth(200);
 		voltar.setOnMouseClicked(event -> voltarInicio());
 
+		atividade.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
+		modalidade.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
+		pacote.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
+		atribuirContrato.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
+		voltar.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
+	
 		pane.getChildren().add(atividade);
 		pane.getChildren().add(modalidade);
 		pane.getChildren().add(pacote);
@@ -332,10 +362,10 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 
 		generateTableMod();
 		tc.buscaTableMod();
-		
+
 		generateTableAtiv();
 		tc.buscaTableAtiv();
-		
+
 		Scene scene = new Scene(pane, 800, 600);
 
 		novoPacoteButton.relocate(295, 10);
@@ -409,6 +439,16 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 		txtPcAtiv.setText(String.valueOf(p.getIdAtividade()));
 	}
 
+	public void entityToBoundaryTBMod(Modalidade m) {
+
+		txtPcMod.setText(String.valueOf(m.getID()));
+	}
+	
+	public void entityToBoundaryTBAtiv(Atividades a) {
+
+		txtPcAtiv.setText(String.valueOf(a.getID()));
+	}
+	
 	@Override
 	public void handle(ActionEvent e) {
 
