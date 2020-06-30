@@ -8,10 +8,7 @@ import javax.swing.JOptionPane;
 import academia.Cliente;
 import academia.Cobranca;
 import academia.Contrato;
-import academia.Modalidade;
 import control.RecepcionistaControl;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -33,6 +30,8 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 
 	RecepcionistaControl rc = new RecepcionistaControl();
 
+	private TableView<Cliente> tableViewCli = new TableView<>(rc.getListaCli());
+	private TableView<Contrato> tableViewCon = new TableView<>(rc.getListaCon());
 	private TableView<Cobranca> tableView = new TableView<>(rc.getLista());
 
 	TextField txtIDCli = new TextField();
@@ -55,45 +54,94 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 	Button manterConButton = new Button("Área de gestão do contrato");
 	Button voltar = new Button("Voltar");
 
-	Button novoCliButton = new Button("Adicionar");
-	Button buscarCliButton = new Button("Buscar Contrato");
+	Button novoCliButton = new Button("Adicionar Cliente");
+	Button buscarCliButton = new Button("Buscar Cliente");
 	Button verCobrancaButton = new Button("Mostrar cobranças");
 	Button mostrarTodosCliButton = new Button("Exibir todos");
 	Button voltarButton = new Button("Voltar");
 
-	Button novoConButton = new Button("Adicionar");
-	Button buscarConButton = new Button("Buscar");
+	Button novoConButton = new Button("Adicionar Contrato");
+	Button buscarConButton = new Button("Buscar Contrato");
 	Button mostrarTodosConButton = new Button("Exibir todos");
 	Button voltarButton2 = new Button("Voltar");
 	Button buscarCliConButton = new Button("Buscar");
 
 	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-	
-	
-	public void generateTable() {
-		
-		
-		long ID_Cobranca;
-		long ID_Contrato;
-		LocalDate dataPgto;
-		double valor;
-		int numParcela;
-		boolean pago;
 
-		TableColumn<Cobranca, Long> colID = new TableColumn<>("ID");
+	public void generateTable() {
+
+		TableColumn<Cobranca, Long> colID = new TableColumn<>("ID Cobranca");
 		colID.setCellValueFactory(new PropertyValueFactory<Cobranca, Long>("ID_Cobranca"));
 
 		TableColumn<Cobranca, Long> colIDC = new TableColumn<>("ID Contrato");
 		colIDC.setCellValueFactory(new PropertyValueFactory<Cobranca, Long>("ID_Contrato"));
 
-		TableColumn<Cobranca, LocalDate> colNivel = new TableColumn<>("");
-	//	colNivel.setCellValueFactory(new PropertyValueFactory<Cobranca, String>("nivel"));
+		TableColumn<Cobranca, LocalDate> colData = new TableColumn<>("Data Vencimento");
+		colData.setCellValueFactory(new PropertyValueFactory<Cobranca, LocalDate>("dataPgto"));
 
-		TableColumn<Cobranca, Integer> colQtdAtiv = new TableColumn<>("QtdAtividades");
-		colQtdAtiv.setCellValueFactory(new PropertyValueFactory<Cobranca, Integer>("qtdAtividades"));
+		TableColumn<Cobranca, Double> colValor = new TableColumn<>("Valor");
+		colValor.setCellValueFactory(new PropertyValueFactory<Cobranca, Double>("valor"));
 
-	//	tableView.getColumns().addAll(colIDM, colTipo, colNivel, colQtdAtiv);
-		
+		TableColumn<Cobranca, Integer> colNumParcela = new TableColumn<>("Nº Parcela");
+		colNumParcela.setCellValueFactory(new PropertyValueFactory<Cobranca, Integer>("numParcela"));
+
+		TableColumn<Cobranca, Boolean> colPago = new TableColumn<>("Pago");
+		colPago.setCellValueFactory(new PropertyValueFactory<Cobranca, Boolean>("pago"));
+
+		tableView.getColumns().addAll(colID, colIDC, colData, colValor, colNumParcela, colPago);
+
+	}
+
+	public void generateTableCli() {
+
+		TableColumn<Cliente, Long> colID = new TableColumn<>("ID Cliente");
+		colID.setCellValueFactory(new PropertyValueFactory<Cliente, Long>("ID"));
+
+		TableColumn<Cliente, String> colCPF = new TableColumn<>("ID Contrato");
+		colCPF.setCellValueFactory(new PropertyValueFactory<Cliente, String>("CPF"));
+
+		TableColumn<Cliente, String> colNome = new TableColumn<>("Nome");
+		colNome.setCellValueFactory(new PropertyValueFactory<Cliente, String>("nome"));
+
+		TableColumn<Cliente, String> colEmail = new TableColumn<>("Email");
+		colEmail.setCellValueFactory(new PropertyValueFactory<Cliente, String>("email"));
+
+		TableColumn<Cliente, String> colTelefone = new TableColumn<>("Telefone");
+		colTelefone.setCellValueFactory(new PropertyValueFactory<Cliente, String>("telefone"));
+
+		TableColumn<Cliente, String> colEndereco = new TableColumn<>("Pago");
+		colEndereco.setCellValueFactory(new PropertyValueFactory<Cliente, String>("endereco"));
+
+		tableViewCli.getColumns().addAll(colID, colCPF, colNome, colEmail, colTelefone, colEndereco);
+
+	}
+
+	public void generateTableCon() {
+
+		TableColumn<Contrato, Long> colID = new TableColumn<>("ID Contrato");
+		colID.setCellValueFactory(new PropertyValueFactory<Contrato, Long>("ID"));
+
+		TableColumn<Contrato, String> colCPFCli = new TableColumn<>("CPF Cliente");
+		colCPFCli.setCellValueFactory(new PropertyValueFactory<Contrato, String>("cpf_cli"));
+
+		TableColumn<Contrato, LocalDate> colData = new TableColumn<>("Data Contrato");
+		colData.setCellValueFactory(new PropertyValueFactory<Contrato, LocalDate>("dataContrato"));
+
+		TableColumn<Contrato, Double> colValor = new TableColumn<>("Valor Mensal");
+		colValor.setCellValueFactory(new PropertyValueFactory<Contrato, Double>("valorMes"));
+
+		TableColumn<Contrato, Integer> colQtdParcelas = new TableColumn<>("Qtd Parcelas");
+		colQtdParcelas.setCellValueFactory(new PropertyValueFactory<Contrato, Integer>("qtdParcelas"));
+
+		TableColumn<Contrato, Integer> colQtdTreinos = new TableColumn<>("Qtd Treinos");
+		colQtdTreinos.setCellValueFactory(new PropertyValueFactory<Contrato, Integer>("qtdTreinos"));
+
+		TableColumn<Contrato, Double> colValorTotal = new TableColumn<>("Valor Total");
+		colValorTotal.setCellValueFactory(new PropertyValueFactory<Contrato, Double>("valorTotal"));
+
+		tableViewCon.getColumns().addAll(colID, colCPFCli, colData, colValor, colQtdParcelas, colQtdTreinos,
+				colValorTotal);
+
 	}
 
 	private Stage stage;
@@ -149,17 +197,17 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 
 		Scene scene = new Scene(pane, 700, 500);
 
-		novoCliButton.relocate(300, 50);
+		novoCliButton.relocate(400, 50);
 		novoCliButton.setMinWidth(200);
 		novoCliButton.setOnMouseClicked(event -> boundaryToEntityCli());
 
-		buscarCliButton.relocate(300, 110);
+		buscarCliButton.relocate(400, 110);
 		buscarCliButton.setMinWidth(200);
 
-		mostrarTodosCliButton.relocate(300, 180);
+		mostrarTodosCliButton.relocate(400, 180);
 		mostrarTodosCliButton.setMinWidth(200);
 
-		voltarButton.relocate(300, 250);
+		voltarButton.relocate(400, 250);
 		voltarButton.setMinWidth(200);
 		voltarButton.setOnMouseClicked(event -> voltar());
 
@@ -245,6 +293,30 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 		txtEmail.setText(String.valueOf(c.getEmail()));
 		txtTelefone.setText(String.valueOf(c.getTelefone()));
 		txtEndereco.setText(String.valueOf(c.getEndereco()));
+	}
+
+	public void mostrarTodosCli() {
+
+		Pane pane = new Pane();
+
+		generateTableCli();
+		rc.buscaTableCli();
+
+		Scene scene = new Scene(pane, 700, 500);
+
+		voltarButton2.relocate(155, 430);
+		voltarButton2.setMinWidth(200);
+		voltarButton2.setOnMouseClicked(event -> voltar());
+
+		tableViewCli.setMaxSize(680, 500);
+
+		pane.getChildren().add(voltarButton2);
+		pane.getChildren().add(tableViewCli);
+
+		stage.setScene(scene);
+		stage.setTitle("Clientes");
+		stage.show();
+
 	}
 
 	public void contrato() {
@@ -354,7 +426,7 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 			c.setValorTotal(Double.parseDouble(txtValorTotal.getText()));
 
 		} catch (Exception ex) {
-			System.out.println("Erro ao receber os dados");
+			JOptionPane.showMessageDialog(null, "Erro ao receber os dados");
 		}
 		return c;
 	}
@@ -373,6 +445,30 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 		}
 	}
 
+	public void mostrarTodosCon() {
+
+		Pane pane = new Pane();
+
+		generateTableCon();
+		rc.buscaTableCon();
+
+		Scene scene = new Scene(pane, 700, 500);
+
+		voltarButton2.relocate(155, 430);
+		voltarButton2.setMinWidth(200);
+		voltarButton2.setOnMouseClicked(event -> voltar());
+
+		tableViewCon.setMaxSize(680, 500);
+
+		pane.getChildren().add(voltarButton2);
+		pane.getChildren().add(tableViewCon);
+
+		stage.setScene(scene);
+		stage.setTitle("Contratos");
+		stage.show();
+
+	}
+
 	public void buscarCli(String CPF) {
 
 		Cliente c = control.buscarCliente(CPF);
@@ -389,21 +485,22 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 
 		Pane pane = new Pane();
 
-	//	generateTableMod();
+		generateTable();
 		rc.buscaTableCob(idContrato);
-		
+
 		Scene scene = new Scene(pane, 700, 500);
 
-		voltarButton2.relocate(400, 250);
+		voltarButton2.relocate(155, 430);
 		voltarButton2.setMinWidth(200);
 		voltarButton2.setOnMouseClicked(event -> voltar());
-		
-	//	tableViewPct.relocate(15, 295);
-	//	tableViewPct.setMaxSize(400, 300);
+
+		tableView.setMaxSize(680, 500);
 
 		pane.getChildren().add(voltarButton2);
+		pane.getChildren().add(tableView);
 
-		stage.setTitle("Manutenção Contrato");
+		stage.setScene(scene);
+		stage.setTitle("Cobranças");
 		stage.show();
 
 	}
@@ -431,7 +528,16 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 			Contrato c = control.buscarContrato(CPF);
 			entityToBoundaryCon(c);
 		} else if (e.getTarget() == verCobrancaButton) {
-
+			try {
+				long id = Long.parseLong(txtIDCon.getText());
+				cobranca(id);
+			} catch (Exception g) {
+				JOptionPane.showMessageDialog(null, "Não existem cobranças a serem mostradas");
+			}
+		} else if (e.getTarget() == mostrarTodosCliButton) {
+			mostrarTodosCli();
+		} else if (e.getTarget() == mostrarTodosConButton) {
+			mostrarTodosCon();
 		}
 
 	}

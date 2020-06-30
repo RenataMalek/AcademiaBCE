@@ -16,6 +16,8 @@ public interface RecepcionistaDAO {
 	
 	void gerarCobranca(Contrato c);
 	
+	List<Cliente> tableViewCliente();
+	List<Contrato> tableViewContrato();
 	List<Cobranca> tableViewCobranca(long idContrato);
 	
 	Contrato pesquisarPorCPFCon(String CPF);

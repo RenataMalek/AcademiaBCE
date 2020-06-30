@@ -12,8 +12,6 @@ public class Recepcionista {
 		// TODO Auto-generated constructor stub
 	}
 
-	
-
 	public Recepcionista() {
 		// TODO Auto-generated constructor stub
 	}

@@ -250,6 +250,14 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 
 	public void atividade() {
 		Pane pane = new Pane();
+		
+		Image image =new Image("file:images/Peso_tela.png");
+		ImageView mv=new ImageView(image);
+				
+		Group root=new Group();
+		root.getChildren().addAll(mv);
+			
+		pane.getChildren().addAll(root);
 
 		Scene scene = new Scene(pane, 700, 500);
 
@@ -267,6 +275,11 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 		voltarButton.setMinWidth(200);
 		voltarButton.setOnMouseClicked(event -> voltar());
 
+		novaAtividadeButton.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;");
+		buscarAtividButton.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;");
+		mostrarTodasAtivButton.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;");
+		voltarButton.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;");
+		
 		pane.getChildren().add(novaAtividadeButton);
 		pane.getChildren().add(buscarAtividButton);
 		pane.getChildren().add(mostrarTodasAtivButton);
@@ -299,6 +312,19 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 		txtAvisos.relocate(300, 300);
 		txtAvisos.setMinWidth(200);
 
+		id.setStyle("-fx-font-size:15; -fx-text-fill:darkblue;-fx-font-weight: bold;");
+		nome.setStyle("-fx-font-size:15; -fx-text-fill:darkblue;-fx-font-weight: bold;");
+		qtdSecao.setStyle("-fx-font-size:15; -fx-text-fill:darkblue;-fx-font-weight: bold;");
+		qtdRepeticao.setStyle("-fx-font-size:15; -fx-text-fill:darkblue;-fx-font-weight: bold;");
+		tempoDuracao.setStyle("-fx-font-size:15; -fx-text-fill:darkblue;-fx-font-weight: bold;");
+		txtID.setStyle("-fx-background-color: '#aaccff';-fx-font-weight: bold;-fx-border-color:'#000000';-fx-border-radius:10px;");
+		txtNome.setStyle("-fx-background-color: '#aaccff';-fx-font-weight: bold;-fx-border-color:'#000000';-fx-border-radius:10px;");
+		txtQtdSecao.setStyle("-fx-background-color: '#aaccff';-fx-font-weight: bold;-fx-border-color:'#000000';-fx-border-radius:10px;");
+		txtQtdRepeticao.setStyle("-fx-background-color: '#aaccff';-fx-font-weight: bold;-fx-border-color:'#000000';-fx-border-radius:10px;");
+		txtTempoDuracao.setStyle("-fx-background-color: '#aaccff';-fx-font-weight: bold;-fx-border-color:'#000000';-fx-border-radius:10px;");
+		txtAvisos.setStyle("-fx-background-color: '#aaccff';-fx-font-weight: bold;-fx-border-color:'#000000';-fx-border-radius:10px;");
+	
+		
 		pane.getChildren().add(id);
 		pane.getChildren().add(txtID);
 		pane.getChildren().add(nome);
@@ -346,6 +372,14 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 	public void modalidade() {
 
 		Pane pane = new Pane();
+		
+		Image image =new Image("file:images/Peso_tela_azul.png");
+		ImageView mv=new ImageView(image);
+				
+		Group root=new Group();
+		root.getChildren().addAll(mv);
+					
+		pane.getChildren().addAll(root);
 
 		Scene scene = new Scene(pane, 700, 500);
 
@@ -364,7 +398,12 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 		voltarButton.relocate(400, 250);
 		voltarButton.setMinWidth(200);
 		voltarButton.setOnMouseClicked(event -> voltar());
-
+		
+		novaModalidadeButton.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;");
+		buscarModButton.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;");
+		mostrarTodasModButton.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;");
+		voltarButton.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;");
+	
 		pane.getChildren().add(novaModalidadeButton);
 		pane.getChildren().add(buscarModButton);
 		pane.getChildren().add(mostrarTodasModButton);
@@ -393,6 +432,17 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 		txtAvisos.relocate(400, 300);
 		txtAvisos.setMinWidth(200);
 
+		id.setStyle("-fx-font-size:20; -fx-text-fill:darkblue;-fx-font-weight: bold;");
+		tipo.setStyle("-fx-font-size:20; -fx-text-fill:darkblue;-fx-font-weight: bold;");
+		nivel.setStyle("-fx-font-size:20; -fx-text-fill:darkblue;-fx-font-weight: bold;");
+		qtdAtividades.setStyle("-fx-font-size:20; -fx-text-fill:darkblue;-fx-font-weight: bold;");
+		txtID.setStyle("-fx-background-color: '#aaccff';-fx-font-weight: bold;-fx-border-color:'#000000';-fx-border-radius:10px;-fx-min-width: 200");
+		txtTipo.setStyle("-fx-background-color: '#aaccff';-fx-font-weight: bold;-fx-border-color:'#000000';-fx-border-radius:10px;-fx-min-width: 200");
+		txtNivel.setStyle("-fx-background-color: '#aaccff';-fx-font-weight: bold;-fx-border-color:'#000000';-fx-border-radius:10px;-fx-min-width: 200");
+		txtQtdAtividades.setStyle("-fx-background-color: '#aaccff';-fx-font-weight: bold;-fx-border-color:'#000000';-fx-border-radius:10px;-fx-min-width: 200");
+		txtAvisos.setStyle("-fx-background-color: '#aaccff';-fx-font-weight: bold;-fx-border-color:'#000000';-fx-border-radius:10px;-fx-min-width: 200");
+	
+		
 		pane.getChildren().add(id);
 		pane.getChildren().add(txtID);
 		pane.getChildren().add(tipo);
@@ -442,6 +492,14 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 
 		generateTableAtiv();
 		tc.buscaTableAtiv();
+		
+		Image image =new Image("file:images/Peso_Menor_tela_Verde.png");
+		ImageView mv=new ImageView(image);
+			
+		Group root=new Group();
+		root.getChildren().addAll(mv);
+				
+		pane.getChildren().addAll(root);
 
 		Scene scene = new Scene(pane, 800, 600);
 
@@ -459,6 +517,11 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 		voltarButton.setMinWidth(200);
 		voltarButton.setOnMouseClicked(event -> voltar());
 
+		novoPacoteButton.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;");
+		buscarPacoteButton.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;");
+		mostrarTodosPacButton.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;");
+		voltarButton.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;");
+		
 		pane.getChildren().add(novoPacoteButton);
 		pane.getChildren().add(buscarPacoteButton);
 		pane.getChildren().add(mostrarTodosPacButton);
@@ -481,6 +544,13 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 
 		tableViewAtiv.relocate(400, 295);
 		tableViewAtiv.setMaxSize(400, 300);
+		
+		pctMod.setStyle("-fx-font-size:20; -fx-text-fill:darkblue;-fx-font-weight: bold;");
+		pctAtiv.setStyle("-fx-font-size:20; -fx-text-fill:darkblue;-fx-font-weight: bold;");
+		txtPcMod.setStyle("-fx-background-color: '#aaccff';-fx-font-weight: bold;-fx-border-color:'#000000';-fx-border-radius:10px;-fx-min-width: 200");
+		txtPcAtiv.setStyle("-fx-background-color: '#aaccff';-fx-font-weight: bold;-fx-border-color:'#000000';-fx-border-radius:10px;-fx-min-width: 200");
+		tableViewMod.setStyle("-fx-background-color: '#aaccff';-fx-font-weight: bold;-fx-border-color:'#000000';-fx-border-radius:10px;-fx-min-width: 200");
+		tableViewAtiv.setStyle("-fx-background-color: '#aaccff';-fx-font-weight: bold;-fx-border-color:'#000000';-fx-border-radius:10px;-fx-min-width: 200");
 
 		pane.getChildren().add(pctMod);
 		pane.getChildren().add(txtPcMod);

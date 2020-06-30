@@ -3,7 +3,6 @@ package dao;
 import academia.Cliente;
 import academia.Cobranca;
 import academia.Contrato;
-import academia.Modalidade;
 import academia.Recepcionista;
 
 import java.sql.Connection;
@@ -221,6 +220,76 @@ public class RecepcionistaDAOImp implements RecepcionistaDAO {
 				c.setValor(rs.getDouble("VALOR_COBRANCA"));
 				c.setNumParcela(rs.getInt("NUM_PARCELA_COBRANCA"));
 				c.setPago(rs.getBoolean("PAGO_COBRANCA"));
+				lista.add(c);
+			}
+
+			connection.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return lista;
+
+	}
+
+	@Override
+	public List<Cliente> tableViewCliente() {
+
+		List<Cliente> lista = new ArrayList<Cliente>();
+
+		try {
+
+			String sql = "SELECT * FROM cliente";
+			PreparedStatement stm = connection.prepareStatement(sql);
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				Cliente c = new Cliente();
+				c.setID(rs.getLong("ID_CLIENTE"));
+				c.setCPF(rs.getString("CPF_CLIENTE"));
+				c.setNome(rs.getString("NOME_CLIENTE"));
+				c.setEmail(rs.getString("EMAIL_CLIENTE"));
+				c.setTelefone(rs.getString("TELEFONE_CLIENTE"));
+				c.setEndereco(rs.getString("ENDERECO_CLIENTE"));
+				lista.add(c);
+			}
+
+			connection.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return lista;
+
+	}
+
+	@Override
+	public List<Contrato> tableViewContrato() {
+
+		List<Contrato> lista = new ArrayList<Contrato>();
+
+		try {
+
+			String sql = "SELECT * FROM contrato";
+			PreparedStatement stm = connection.prepareStatement(sql);
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				Contrato c = new Contrato();
+				c.setID(rs.getLong("ID_CONTRATO"));
+				c.setCpf_cli(rs.getString("CPF_CLIENTE_FK"));
+				c.setDataContrato(rs.getDate("DATA_CONTRATO").toLocalDate());
+				c.setValorMes(rs.getDouble("VALOR_MENSAL_CONTRATO"));
+				c.setQtdParcelas(rs.getInt("PARCELAS"));
+				c.setQtdTreinos(rs.getInt("QTD_TREINOS"));
+				
+				double vMes = rs.getDouble("VALOR_MENSAL_CONTRATO") * rs.getInt("PARCELAS");
+				c.setValorTotal(vMes);
+				
 				lista.add(c);
 			}
 

@@ -19,11 +19,11 @@ public class TreinadorControl {
 	private ObservableList<Modalidade> listaM = FXCollections.observableArrayList();
 
 	private ObservableList<Atividades> listaA = FXCollections.observableArrayList();
-	
+
 	private ObservableList<Pacotes> listaP = FXCollections.observableArrayList();
-	
+
 	private ObservableList<Contrato> listaC = FXCollections.observableArrayList();
-	
+
 	private ObservableList<Atividades> listaARefinado = FXCollections.observableArrayList();
 
 	public ObservableList<Modalidade> getListaM() {
@@ -33,7 +33,7 @@ public class TreinadorControl {
 	public ObservableList<Atividades> getListaA() {
 		return listaA;
 	}
-	
+
 	public ObservableList<Pacotes> getListaP() {
 		return listaP;
 	}
@@ -41,11 +41,11 @@ public class TreinadorControl {
 	public ObservableList<Contrato> getListaC() {
 		return listaC;
 	}
-	
+
 	public ObservableList<Atividades> getListaARefinado() {
 		return listaARefinado;
 	}
-	
+
 	public void criarModalidades(Modalidade m) {
 
 		treDAO.criarModalidades(m);
@@ -63,7 +63,7 @@ public class TreinadorControl {
 		treDAO.montarPacote(p);
 
 	}
-	
+
 	public void vincularPacotes(ParticiparModalidade pm) {
 		treDAO.vincularPacoteContrato(pm);
 	}
@@ -104,7 +104,7 @@ public class TreinadorControl {
 		return p;
 
 	}
-	
+
 	public Pacotes buscarTablePct() {
 
 		List<Pacotes> pct = treDAO.tablePct();
@@ -112,7 +112,7 @@ public class TreinadorControl {
 
 		return listaP.get(0);
 	}
-	
+
 	public Contrato buscarTableCon() {
 
 		List<Contrato> con = treDAO.tableCon();
@@ -120,7 +120,7 @@ public class TreinadorControl {
 
 		return listaC.get(0);
 	}
-		
+
 	public Atividades buscarTableAtivRefinado(long idMod) {
 
 		List<Atividades> aref = treDAO.buscaTableAtivRefinado(idMod);
