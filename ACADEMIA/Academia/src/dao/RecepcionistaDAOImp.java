@@ -1,7 +1,9 @@
 package dao;
 
 import academia.Cliente;
+import academia.Cobranca;
 import academia.Contrato;
+import academia.Modalidade;
 import academia.Recepcionista;
 
 import java.sql.Connection;
@@ -10,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecepcionistaDAOImp implements RecepcionistaDAO {
 
@@ -111,7 +115,7 @@ public class RecepcionistaDAOImp implements RecepcionistaDAO {
 			stm.setInt(5, c.getQtdTreinos());
 
 			stm.executeUpdate();
-			
+
 			gerarCobranca(c);
 
 		} catch (Exception e) {
@@ -123,49 +127,110 @@ public class RecepcionistaDAOImp implements RecepcionistaDAO {
 	@Override
 	public void gerarCobranca(Contrato c) {
 
+		Contrato pegarID = pesquisarPorCPFCon(c.getCpf_cli());
+
 		int aux = c.getQtdParcelas();
-		LocalDate ld;
-		LocalDate proximo = c.getDataContrato();
+		LocalDate ld = c.getDataContrato();
+		LocalDate proximo;
 		int cont = 1;
+
+		int dia = ld.getDayOfMonth();
+		int mes = ld.getMonthValue();
+		int ano = ld.getYear();
+
+		String m = "/";
+
+		if (mes != 10 && mes != 11 && mes != 12) {
+			m = "/0";
+		}
+
+		String data = dia + m + mes + "/" + ano;
 
 		for (int i = 0; i < aux; i++) {
 
 			try {
-				
-				ld = proximo;
-				
-				int dia = ld.getDayOfMonth();
-				int mes = ld.getMonthValue();
-				int ano = ld.getYear();
-				
-				String m = "/";
-				
-				if (mes != 10 && mes != 11 && mes != 12) {
-					m = "/0";
-				}
-
-				String data = dia + m + mes + "/" + ano;
 
 				proximo = LocalDate.parse(data, dtf);
 
 				String sql = "INSERT INTO cobranca (ID_COBRANCA, ID_CONTRATO_FK, DIA_VCTO_COBRANCA, VALOR_COBRANCA, NUM_PARCELA_COBRANCA, PAGO_COBRANCA)"
 						+ "VALUES (0, ?, ?, ?, ?, 1)";
 				PreparedStatement stm = connection.prepareStatement(sql);
-				stm.setLong(1, c.getID());
+				stm.setLong(1, pegarID.getID());
 				stm.setDate(2, java.sql.Date.valueOf(proximo));
 				stm.setDouble(3, c.getValorMes());
-				stm.setInt(4, cont );
+				stm.setInt(4, cont);
 
 				stm.executeUpdate();
-				
 				cont++;
-				
+
+				if (mes < 12) {
+					mes++;
+				} else {
+					mes = 0;
+				}
+
+				if (mes == 0) {
+					ano++;
+				} else {
+
+				}
+
+				if (dia >= 29 && mes == 2) {
+					if ((ano % 4 == 0) && (ano % 100 != 0) || (ano % 400 == 0)) {
+						dia = 29;
+					}
+				} else {
+					if (mes == 2) {
+						dia = 28;
+
+					}
+				}
+
+				if (mes != 10 && mes != 11 && mes != 12) {
+					m = "/0";
+				}
+
+				data = dia + m + mes + "/" + ano;
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 		}
+
+	}
+
+	@Override
+	public List<Cobranca> tableViewCobranca(long idContrato) {
+
+		List<Cobranca> lista = new ArrayList<Cobranca>();
+
+		try {
+
+			String sql = "SELECT * FROM cobranca WHERE ID_CONTRATO_FK like ?";
+			PreparedStatement stm = connection.prepareStatement(sql);
+
+			stm.setString(1, "%" + idContrato + "%");
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				Cobranca c = new Cobranca();
+				c.setID_Cobranca((rs.getLong("ID_COBRANCA")));
+				c.setID_Contrato(rs.getLong("ID_CONTRATO_FK"));
+				c.setDataPgto(rs.getDate("DIA_VCTO_COBRANCA").toLocalDate());
+				c.setValor(rs.getDouble("VALOR_COBRANCA"));
+				c.setNumParcela(rs.getInt("NUM_PARCELA_COBRANCA"));
+				c.setPago(rs.getBoolean("PAGO_COBRANCA"));
+				lista.add(c);
+			}
+
+			connection.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return lista;
 
 	}
 
@@ -204,4 +269,5 @@ public class RecepcionistaDAOImp implements RecepcionistaDAO {
 		return null;
 
 	}
+
 }

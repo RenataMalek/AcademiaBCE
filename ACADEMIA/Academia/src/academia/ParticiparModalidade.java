@@ -1,36 +1,24 @@
 package academia;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ParticiparModalidade {
 
-	long idParticipacao;
-	Contrato contrato;
-	List<Pacotes> pacote = new ArrayList<Pacotes>();
+	long idContrato;
+	long idModalidade;
 
-	public long getIdParticipacao() {
-		return idParticipacao;
+	public long getIdContrato() {
+		return idContrato;
 	}
 
-	public void setIdParticipacao(long idParticipacao) {
-		this.idParticipacao = idParticipacao;
+	public void setIdContrato(long idContrato) {
+		this.idContrato = idContrato;
 	}
 
-	public Contrato getContrato() {
-		return contrato;
+	public long getIdModalidade() {
+		return idModalidade;
 	}
 
-	public void setContrato(Contrato contrato) {
-		this.contrato = contrato;
-	}
-
-	public List<Pacotes> getPacote() {
-		return pacote;
-	}
-
-	public void setPacote(Pacotes p) {
-		pacote.add(p);
+	public void setIdModalidade(long idModalidade) {
+		this.idModalidade = idModalidade;
 	}
 
 }

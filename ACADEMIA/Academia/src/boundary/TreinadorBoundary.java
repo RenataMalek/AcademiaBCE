@@ -1,8 +1,12 @@
 package boundary;
 
+import javax.swing.JOptionPane;
+
 import academia.Atividades;
+import academia.Contrato;
 import academia.Modalidade;
 import academia.Pacotes;
+import academia.ParticiparModalidade;
 import control.TreinadorControl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -29,6 +33,9 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 
 	private TableView<Modalidade> tableViewMod = new TableView<>(tc.getListaM());
 	private TableView<Atividades> tableViewAtiv = new TableView<>(tc.getListaA());
+	private TableView<Pacotes> tableViewPct = new TableView<>(tc.getListaP());
+	private TableView<Contrato> tableViewCon = new TableView<>(tc.getListaC());
+	private TableView<Atividades> tableViewAtivRef = new TableView<>(tc.getListaARefinado());
 
 	Button novaAtividadeButton = new Button("Adicionar");
 	Button buscarAtividButton = new Button("Buscar");
@@ -41,6 +48,8 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 	Button novoPacoteButton = new Button("Adicionar");
 	Button buscarPacoteButton = new Button("Buscar");
 	Button mostrarTodosPacButton = new Button("Exibir todos");
+
+	Button atribuirPctButton = new Button("Vincular");
 
 	TextField txtID = new TextField();
 	TextField txtNome = new TextField();
@@ -56,6 +65,9 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 
 	TextField txtPcMod = new TextField();
 	TextField txtPcAtiv = new TextField();
+
+	TextField txtPacote = new TextField();
+	TextField txtContrato = new TextField();
 
 	public void generateTableMod() {
 
@@ -99,12 +111,72 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 		TableColumn<Atividades, Double> colTempo = new TableColumn<>("TempoDuracao");
 		colTempo.setCellValueFactory(new PropertyValueFactory<Atividades, Double>("tempoDuracao"));
 
+		tableViewAtivRef.getColumns().addAll(colIDA, colNome, colQtdSecao, colQtdRepeticao, colTempo);
 		tableViewAtiv.getColumns().addAll(colIDA, colNome, colQtdSecao, colQtdRepeticao, colTempo);
 		tableViewAtiv.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Atividades>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Atividades> a, Atividades antigo, Atividades novo) {
 				entityToBoundaryTBAtiv(novo);
+			}
+
+		});
+
+	}
+
+	public void generateTableAtivRef() {
+
+		TableColumn<Atividades, Integer> colIDA = new TableColumn<>("IDA");
+		colIDA.setCellValueFactory(new PropertyValueFactory<Atividades, Integer>("ID"));
+
+		TableColumn<Atividades, String> colNome = new TableColumn<>("Nome");
+		colNome.setCellValueFactory(new PropertyValueFactory<Atividades, String>("Nome"));
+
+		TableColumn<Atividades, Integer> colQtdSecao = new TableColumn<>("QtdSecao");
+		colQtdSecao.setCellValueFactory(new PropertyValueFactory<Atividades, Integer>("qtdSecao"));
+
+		TableColumn<Atividades, Integer> colQtdRepeticao = new TableColumn<>("QtdRepeticao");
+		colQtdRepeticao.setCellValueFactory(new PropertyValueFactory<Atividades, Integer>("qtdRepeticao"));
+
+		TableColumn<Atividades, Double> colTempo = new TableColumn<>("TempoDuracao");
+		colTempo.setCellValueFactory(new PropertyValueFactory<Atividades, Double>("tempoDuracao"));
+
+		tableViewAtivRef.getColumns().addAll(colIDA, colNome, colQtdSecao, colQtdRepeticao, colTempo);
+
+	}
+
+	public void generateTablePct() {
+
+		TableColumn<Pacotes, Long> colIDM = new TableColumn<>("Codigo da modalidade");
+		colIDM.setCellValueFactory(new PropertyValueFactory<Pacotes, Long>("idModalidade"));
+
+		tableViewPct.getColumns().add(colIDM);
+		tableViewPct.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Pacotes>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Pacotes> p, Pacotes antigo, Pacotes novo) {
+				entityToBoundaryTBPct(novo);
+			}
+
+		});
+
+	}
+
+	public void generateTableCon() {
+
+		TableColumn<Contrato, Long> colIDC = new TableColumn<>("IDC");
+		colIDC.setCellValueFactory(new PropertyValueFactory<Contrato, Long>("ID"));
+
+		TableColumn<Contrato, String> colCPF = new TableColumn<>("CPF Cliente");
+		colCPF.setCellValueFactory(new PropertyValueFactory<Contrato, String>("cpf_cli"));
+
+		tableViewCon.getColumns().add(colIDC);
+		tableViewCon.getColumns().add(colCPF);
+		tableViewCon.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Contrato>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Contrato> c, Contrato antigo, Contrato novo) {
+				entityToBoundaryTBCon(novo);
 			}
 
 		});
@@ -118,13 +190,13 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 
 	private void construirTela(Stage stage) {
 		Pane pane = new Pane();
-		
-		Image image =new Image("file:images/Verde_fundo.png");
-		ImageView mv=new ImageView(image);
-				
-		Group root=new Group();
+
+		Image image = new Image("file:images/Verde_fundo.png");
+		ImageView mv = new ImageView(image);
+
+		Group root = new Group();
 		root.getChildren().addAll(mv);
-					
+
 		pane.getChildren().addAll(root);
 
 		Scene scene = new Scene(pane, 700, 500);
@@ -147,19 +219,24 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 		Button atribuirContrato = new Button("Atribuir Pacotes");
 		atribuirContrato.relocate(220, 260);
 		atribuirContrato.setMinWidth(200);
-		// atribuirContrato.setOnMouseClicked(event -> atribuirContrato());
+		atribuirContrato.setOnMouseClicked(event -> atribuirPctContrato());
 
 		Button voltar = new Button("Voltar");
 		voltar.relocate(220, 320);
 		voltar.setMinWidth(200);
 		voltar.setOnMouseClicked(event -> voltarInicio());
 
-		atividade.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
-		modalidade.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
-		pacote.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
-		atribuirContrato.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
-		voltar.setStyle("-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
-	
+		atividade.setStyle(
+				"-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
+		modalidade.setStyle(
+				"-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
+		pacote.setStyle(
+				"-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
+		atribuirContrato.setStyle(
+				"-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
+		voltar.setStyle(
+				"-fx-background-color: '#4422ff';-fx-text-fill:'#ffffff';-fx-font-weight: bold;-fx-font-size:20;");
+
 		pane.getChildren().add(atividade);
 		pane.getChildren().add(modalidade);
 		pane.getChildren().add(pacote);
@@ -234,7 +311,7 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 		pane.getChildren().add(txtTempoDuracao);
 		pane.getChildren().add(txtAvisos);
 		stage.setScene(scene);
-		stage.setTitle("Novas Atividades");
+		stage.setTitle("Atividades");
 		stage.show();
 
 	}
@@ -326,7 +403,7 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 		pane.getChildren().add(txtQtdAtividades);
 		pane.getChildren().add(txtAvisos);
 		stage.setScene(scene);
-		stage.setTitle("Novas Modalidades");
+		stage.setTitle("Modalidades");
 		stage.show();
 
 	}
@@ -413,7 +490,7 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 		pane.getChildren().add(tableViewAtiv);
 
 		stage.setScene(scene);
-		stage.setTitle("Novas Atividades");
+		stage.setTitle("Pacotes");
 		stage.show();
 
 	}
@@ -443,12 +520,134 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 
 		txtPcMod.setText(String.valueOf(m.getID()));
 	}
-	
+
 	public void entityToBoundaryTBAtiv(Atividades a) {
 
 		txtPcAtiv.setText(String.valueOf(a.getID()));
 	}
-	
+
+	public void atribuirPctContrato() {
+
+		Pane pane = new Pane();
+
+		generateTablePct();
+		tc.buscarTablePct();
+
+		generateTableCon();
+		tc.buscarTableCon();
+
+		Scene scene = new Scene(pane, 800, 600);
+
+		atribuirPctButton.relocate(295, 10);
+		atribuirPctButton.setMinWidth(200);
+
+		Button voltarButton = new Button("Voltar");
+		voltarButton.relocate(295, 190);
+		voltarButton.setMinWidth(200);
+		voltarButton.setOnMouseClicked(event -> voltar());
+
+		pane.getChildren().add(atribuirPctButton);
+		pane.getChildren().add(voltarButton);
+
+		atribuirPctButton.setOnAction(this);
+
+		Label pacote = new Label("Pacote: ");
+		pacote.relocate(15, 70);
+		txtPacote.relocate(90, 70);
+
+		Label contrato = new Label("Contrato: ");
+		contrato.relocate(15, 130);
+		txtContrato.relocate(90, 130);
+
+		tableViewPct.relocate(15, 295);
+		tableViewPct.setMaxSize(400, 300);
+
+		tableViewCon.relocate(400, 295);
+		tableViewCon.setMaxSize(400, 300);
+
+		pane.getChildren().add(pacote);
+		pane.getChildren().add(txtPacote);
+		pane.getChildren().add(contrato);
+		pane.getChildren().add(txtContrato);
+		pane.getChildren().add(tableViewPct);
+		pane.getChildren().add(tableViewCon);
+
+		stage.setScene(scene);
+		stage.setTitle("Vincular pacotes e contratos");
+		stage.show();
+
+	}
+
+	public ParticiparModalidade boundaryToEntityParticipar() {
+
+		ParticiparModalidade pm = new ParticiparModalidade();
+
+		try {
+
+			pm.setIdContrato(Long.parseLong(txtContrato.getText()));
+			pm.setIdModalidade(Long.parseLong(txtPacote.getText()));
+
+		} catch (Exception ex) {
+			System.out.println("Erro ao receber os dados");
+		}
+		return pm;
+	}
+
+	public void entityToBoundaryTBPct(Pacotes p) {
+
+		txtPacote.setText(String.valueOf(p.getIdModalidade()));
+	}
+
+	public void entityToBoundaryTBCon(Contrato c) {
+
+		txtContrato.setText(String.valueOf(c.getID()));
+	}
+
+	public void mostrarUmPacote(Pacotes p) {
+
+		Pane pane = new Pane();
+
+		generateTableAtivRef();
+		tc.buscarTableAtivRefinado(p.getIdModalidade());
+
+		Scene scene = new Scene(pane, 650, 600);
+
+		Button voltarButton = new Button("Voltar");
+		voltarButton.relocate(290, 530);
+		voltarButton.setMinWidth(200);
+		voltarButton.setOnMouseClicked(event -> voltar());
+
+		pane.getChildren().add(voltarButton);
+
+		Label idMod = new Label("ID");
+		idMod.relocate(20, 70);
+		txtID.relocate(20, 90);
+
+		Label tipo = new Label("TIPO");
+		tipo.relocate(180, 70);
+		txtTipo.relocate(180, 90);
+
+		Label nivel = new Label("NIVEL");
+		nivel.relocate(340, 70);
+		txtNivel.relocate(340, 90);
+
+		tableViewAtivRef.relocate(20, 210);
+		tableViewAtivRef.setMaxSize(480, 250);
+
+		pane.getChildren().add(idMod);
+		pane.getChildren().add(txtID);
+		pane.getChildren().add(tipo);
+		pane.getChildren().add(txtTipo);
+		pane.getChildren().add(nivel);
+		pane.getChildren().add(txtNivel);
+		pane.getChildren().add(tableViewAtivRef);
+
+		stage.setScene(scene);
+		stage.setTitle("Pacote");
+		stage.show();
+
+	}
+
 	@Override
 	public void handle(ActionEvent e) {
 
@@ -462,7 +661,7 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 				Atividades a = tc.buscarAtividade(idAtiv);
 				entityToBoundaryAtiv(a);
 			} catch (Exception f) {
-				System.out.println("Atividade nao existe");
+				JOptionPane.showMessageDialog(null, "Atividade nao existe");
 			}
 		} else if (e.getTarget() == novaModalidadeButton) {
 			Modalidade m = boundaryToEntityMod();
@@ -479,10 +678,13 @@ public class TreinadorBoundary implements EventHandler<ActionEvent> {
 			try {
 				long idMod = Long.parseLong(txtPcMod.getText());
 				Pacotes p = tc.buscarPacote(idMod);
-				entityToBoundaryPacote(p);
+				mostrarUmPacote(p);
 			} catch (Exception g) {
-				System.out.println("Pacote não existe");
+				JOptionPane.showMessageDialog(null, "Pacote não existe");
 			}
+		} else if (e.getTarget() == atribuirPctButton) {
+			ParticiparModalidade pm = boundaryToEntityParticipar();
+			tc.vincularPacotes(pm);
 		}
 
 	}

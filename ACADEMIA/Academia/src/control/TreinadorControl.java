@@ -3,8 +3,10 @@ package control;
 import java.util.List;
 
 import academia.Atividades;
+import academia.Contrato;
 import academia.Modalidade;
 import academia.Pacotes;
+import academia.ParticiparModalidade;
 import dao.TreinadorDAO;
 import dao.TreinadorDAOImp;
 import javafx.collections.FXCollections;
@@ -17,6 +19,12 @@ public class TreinadorControl {
 	private ObservableList<Modalidade> listaM = FXCollections.observableArrayList();
 
 	private ObservableList<Atividades> listaA = FXCollections.observableArrayList();
+	
+	private ObservableList<Pacotes> listaP = FXCollections.observableArrayList();
+	
+	private ObservableList<Contrato> listaC = FXCollections.observableArrayList();
+	
+	private ObservableList<Atividades> listaARefinado = FXCollections.observableArrayList();
 
 	public ObservableList<Modalidade> getListaM() {
 		return listaM;
@@ -25,7 +33,19 @@ public class TreinadorControl {
 	public ObservableList<Atividades> getListaA() {
 		return listaA;
 	}
+	
+	public ObservableList<Pacotes> getListaP() {
+		return listaP;
+	}
 
+	public ObservableList<Contrato> getListaC() {
+		return listaC;
+	}
+	
+	public ObservableList<Atividades> getListaARefinado() {
+		return listaARefinado;
+	}
+	
 	public void criarModalidades(Modalidade m) {
 
 		treDAO.criarModalidades(m);
@@ -43,11 +63,14 @@ public class TreinadorControl {
 		treDAO.montarPacote(p);
 
 	}
+	
+	public void vincularPacotes(ParticiparModalidade pm) {
+		treDAO.vincularPacoteContrato(pm);
+	}
 
 	public Modalidade buscaTableMod() {
-		long id = 1;
 
-		List<Modalidade> mod = treDAO.buscaTableMod(id);
+		List<Modalidade> mod = treDAO.buscaTableMod();
 		listaM.addAll(mod);
 
 		return listaM.get(0);
@@ -68,9 +91,8 @@ public class TreinadorControl {
 	}
 
 	public Atividades buscaTableAtiv() {
-		long id = 5;
 
-		List<Atividades> ativ = treDAO.buscaTableAtiv(id);
+		List<Atividades> ativ = treDAO.buscaTableAtiv();
 		listaA.addAll(ativ);
 
 		return listaA.get(0);
@@ -81,6 +103,30 @@ public class TreinadorControl {
 		Pacotes p = treDAO.buscarPacote(idMod);
 		return p;
 
+	}
+	
+	public Pacotes buscarTablePct() {
+
+		List<Pacotes> pct = treDAO.tablePct();
+		listaP.addAll(pct);
+
+		return listaP.get(0);
+	}
+	
+	public Contrato buscarTableCon() {
+
+		List<Contrato> con = treDAO.tableCon();
+		listaC.addAll(con);
+
+		return listaC.get(0);
+	}
+		
+	public Atividades buscarTableAtivRefinado(long idMod) {
+
+		List<Atividades> aref = treDAO.buscaTableAtivRefinado(idMod);
+		listaARefinado.addAll(aref);
+
+		return listaARefinado.get(0);
 	}
 
 	public void mostrarTodasModalidades() {

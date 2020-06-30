@@ -6,15 +6,22 @@ import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
 
 import academia.Cliente;
+import academia.Cobranca;
 import academia.Contrato;
+import academia.Modalidade;
 import control.RecepcionistaControl;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -23,6 +30,10 @@ import javafx.stage.Stage;
 public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 
 	private RecepcionistaControl control = new RecepcionistaControl();
+
+	RecepcionistaControl rc = new RecepcionistaControl();
+
+	private TableView<Cobranca> tableView = new TableView<>(rc.getLista());
 
 	TextField txtIDCli = new TextField();
 	TextField txtCPF = new TextField();
@@ -45,7 +56,8 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 	Button voltar = new Button("Voltar");
 
 	Button novoCliButton = new Button("Adicionar");
-	Button buscarCliButton = new Button("Buscar");
+	Button buscarCliButton = new Button("Buscar Contrato");
+	Button verCobrancaButton = new Button("Mostrar cobranças");
 	Button mostrarTodosCliButton = new Button("Exibir todos");
 	Button voltarButton = new Button("Voltar");
 
@@ -56,8 +68,33 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 	Button buscarCliConButton = new Button("Buscar");
 
 	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	
+	
+	public void generateTable() {
+		
+		
+		long ID_Cobranca;
+		long ID_Contrato;
+		LocalDate dataPgto;
+		double valor;
+		int numParcela;
+		boolean pago;
 
-	RecepcionistaControl rc = new RecepcionistaControl();
+		TableColumn<Cobranca, Long> colID = new TableColumn<>("ID");
+		colID.setCellValueFactory(new PropertyValueFactory<Cobranca, Long>("ID_Cobranca"));
+
+		TableColumn<Cobranca, Long> colIDC = new TableColumn<>("ID Contrato");
+		colIDC.setCellValueFactory(new PropertyValueFactory<Cobranca, Long>("ID_Contrato"));
+
+		TableColumn<Cobranca, LocalDate> colNivel = new TableColumn<>("");
+	//	colNivel.setCellValueFactory(new PropertyValueFactory<Cobranca, String>("nivel"));
+
+		TableColumn<Cobranca, Integer> colQtdAtiv = new TableColumn<>("QtdAtividades");
+		colQtdAtiv.setCellValueFactory(new PropertyValueFactory<Cobranca, Integer>("qtdAtividades"));
+
+	//	tableView.getColumns().addAll(colIDM, colTipo, colNivel, colQtdAtiv);
+		
+	}
 
 	private Stage stage;
 
@@ -181,32 +218,6 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 
 	}
 
-	@Override
-	public void handle(ActionEvent e) {
-
-		if (e.getTarget() == novoCliButton) {
-			Cliente c = boundaryToEntityCli();
-			control.novoCliente(c);
-		} else if (e.getTarget() == buscarCliButton) {
-			try {
-				String CPF = txtCPF.getText();
-				Cliente c = control.buscarCliente(CPF);
-				entityToBoundaryCli(c);
-			} catch (Exception f) {
-				System.out.println("Cliente não possui cadastro");
-			}
-
-		} else if (e.getTarget() == novoConButton) {
-			Contrato c = boundaryToEntityCon();
-			control.novoContrato(c);
-		} else if (e.getTarget() == buscarConButton) {
-			String CPF = txtCPF.getText();
-			Contrato c = control.buscarContrato(CPF);
-			entityToBoundaryCon(c);
-		}
-
-	}
-
 	public Cliente boundaryToEntityCli() {
 
 		Cliente c = new Cliente();
@@ -246,10 +257,13 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 		novoConButton.setMinWidth(200);
 		novoConButton.setOnMouseClicked(event -> boundaryToEntityCon());
 
-		buscarConButton.relocate(400, 110);
+		buscarConButton.relocate(400, 100);
 		buscarConButton.setMinWidth(200);
 
-		mostrarTodosConButton.relocate(400, 180);
+		verCobrancaButton.relocate(400, 150);
+		verCobrancaButton.setMinWidth(200);
+
+		mostrarTodosConButton.relocate(400, 200);
 		mostrarTodosConButton.setMinWidth(200);
 
 		voltarButton2.relocate(400, 250);
@@ -262,12 +276,14 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 
 		pane.getChildren().add(novoConButton);
 		pane.getChildren().add(buscarConButton);
+		pane.getChildren().add(verCobrancaButton);
 		pane.getChildren().add(mostrarTodosConButton);
 		pane.getChildren().add(buscarCliConButton);
 		pane.getChildren().add(voltarButton2);
 
 		novoConButton.setOnAction(this);
 		buscarConButton.setOnAction(this);
+		verCobrancaButton.setOnAction(this);
 		mostrarTodosConButton.setOnAction(this);
 		buscarCliConButton.setOnAction(this);
 
@@ -365,6 +381,57 @@ public class RecepcionistaBoundary implements EventHandler<ActionEvent> {
 			JOptionPane.showMessageDialog(null, "Cliente possui cadastro, prosseguir");
 		} else {
 			JOptionPane.showMessageDialog(null, "Cliente não localizado \nRealize seu cadastro para prosseguir");
+		}
+
+	}
+
+	public void cobranca(long idContrato) {
+
+		Pane pane = new Pane();
+
+	//	generateTableMod();
+		rc.buscaTableCob(idContrato);
+		
+		Scene scene = new Scene(pane, 700, 500);
+
+		voltarButton2.relocate(400, 250);
+		voltarButton2.setMinWidth(200);
+		voltarButton2.setOnMouseClicked(event -> voltar());
+		
+	//	tableViewPct.relocate(15, 295);
+	//	tableViewPct.setMaxSize(400, 300);
+
+		pane.getChildren().add(voltarButton2);
+
+		stage.setTitle("Manutenção Contrato");
+		stage.show();
+
+	}
+
+	@Override
+	public void handle(ActionEvent e) {
+
+		if (e.getTarget() == novoCliButton) {
+			Cliente c = boundaryToEntityCli();
+			control.novoCliente(c);
+		} else if (e.getTarget() == buscarCliButton) {
+			try {
+				String CPF = txtCPF.getText();
+				Cliente c = control.buscarCliente(CPF);
+				entityToBoundaryCli(c);
+			} catch (Exception f) {
+				System.out.println("Cliente não possui cadastro");
+			}
+
+		} else if (e.getTarget() == novoConButton) {
+			Contrato c = boundaryToEntityCon();
+			control.novoContrato(c);
+		} else if (e.getTarget() == buscarConButton) {
+			String CPF = txtCPF.getText();
+			Contrato c = control.buscarContrato(CPF);
+			entityToBoundaryCon(c);
+		} else if (e.getTarget() == verCobrancaButton) {
+
 		}
 
 	}

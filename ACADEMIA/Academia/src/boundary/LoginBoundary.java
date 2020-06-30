@@ -1,5 +1,7 @@
 package boundary;
 
+import javax.swing.JOptionPane;
+
 import control.LoginControl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -42,7 +45,6 @@ public class LoginBoundary {
 		Group root = new Group();
 		root.getChildren().addAll(mv);
 
-
 		pane.getChildren().addAll(root);
 		Scene scene = new Scene(pane, 700, 500);
 
@@ -55,7 +57,7 @@ public class LoginBoundary {
 		informacao.relocate(200, 90);
 		informacao.setAlignment(Pos.CENTER);
 
-		acesso = new TextField();
+		acesso = new PasswordField();
 		acesso.relocate(260, 150);
 		acesso.setMinWidth(170);
 
@@ -114,28 +116,19 @@ public class LoginBoundary {
 						new TreinadorBoundary(stage);
 					} else if (tipoAcessoSelecionado.equalsIgnoreCase("cliente")) {
 
-						/*
-						 * String CPF = acesso.getText(); ClienteControl cc = new ClienteControl(); if
-						 * (cc.entrarAcademia(CPF)) { JOptionPane.showMessageDialog(null,
-						 * "Entrada Liberada!!"); } else { JOptionPane.showMessageDialog(null,
-						 * "Problemas na liberação, procure a recepcionista"); }
-						 * 
-						 * new LoginBoundary(stage);
-						 */
-
-						System.out.println("Bem vindo cliente");
-
+						JOptionPane.showMessageDialog(null, "Entrada liberada!");
+						new LoginBoundary(stage);
 					}
 
 				} else {
-					System.out.println("Código de acesso invalido");
+					JOptionPane.showMessageDialog(null, "Código de acesso invalido");
 				}
 			} catch (Exception exception) {
-				System.out.println("Erro ao fazer login!");
+				JOptionPane.showMessageDialog(null, "Erro ao fazer login!");
 			}
 
 		} else {
-			System.out.println("preencha todos os campos para logar!");
+			JOptionPane.showMessageDialog(null, "preencha todos os campos para logar!");
 		}
 	}
 }

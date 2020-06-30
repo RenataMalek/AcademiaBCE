@@ -1,12 +1,34 @@
 package control;
 
+import java.util.List;
+
+import academia.Atividades;
 import academia.Cliente;
+import academia.Cobranca;
 import academia.Contrato;
+import academia.Modalidade;
 import dao.RecepcionistaDAOImp;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class RecepcionistaControl {
 
 	RecepcionistaDAOImp repDAO = new RecepcionistaDAOImp();
+	
+	private ObservableList<Cobranca> lista = FXCollections.observableArrayList();
+
+	public ObservableList<Cobranca> getLista() {
+		return lista;
+	}
+	
+	public Cobranca buscaTableCob(long idContrato) {
+
+		List<Cobranca> cob = repDAO.tableViewCobranca(idContrato);
+		lista.addAll(cob);
+
+		return lista.get(0);
+	}
+	
 
 	// tratamento manter cliente
 

@@ -32,21 +32,17 @@ public class LoginControl {
 			RecepcionistaDAOImp recepcionistaDAO = new RecepcionistaDAOImp();
 			Recepcionista recepcionista = recepcionistaDAO.buscarPorCodigoAcesso(acesso);
 
-			// Recepcionista r = new Recepcionista();
 			return validarObjetoNaoNulo(recepcionista.getCodigoAcesso().equals(acesso));
 
 		} else if (tipoAcesso.equals(TREINADOR)) {
 			TreinadorDAOImp treinadorDAO = new TreinadorDAOImp();
 			Treinador treinador = treinadorDAO.buscarPorCodigoAcesso(acesso);
 
-			// Treinador t = new Treinador();
 
 			return validarObjetoNaoNulo(treinador.getCodigoAcesso().equals(acesso));
 		} else {
 			ClienteDAOImp clienteDAO = new ClienteDAOImp();
 			Cliente cliente = clienteDAO.buscarClientePorCpf(acesso);
-
-		//	Cliente c = new Cliente();
 
 			return validarObjetoNaoNulo(cliente.getCPF().equals(acesso));
 		}

@@ -1,8 +1,10 @@
 package dao;
 
 import academia.Atividades;
+import academia.Contrato;
 import academia.Modalidade;
 import academia.Pacotes;
+import academia.ParticiparModalidade;
 import academia.Treinador;
 
 import java.sql.Connection;
@@ -128,7 +130,7 @@ public class TreinadorDAOImp implements TreinadorDAO {
 	}
 
 	@Override
-	public List<Modalidade> buscaTableMod(long idMod) {
+	public List<Modalidade> buscaTableMod() {
 
 		String sqlM = "SELECT * FROM treino";
 
@@ -192,7 +194,7 @@ public class TreinadorDAOImp implements TreinadorDAO {
 	}
 
 	@Override
-	public List<Atividades> buscaTableAtiv(long idAtiv) {
+	public List<Atividades> buscaTableAtiv() {
 
 		List<Atividades> lista = new ArrayList<Atividades>();
 
@@ -202,9 +204,6 @@ public class TreinadorDAOImp implements TreinadorDAO {
 
 			PreparedStatement stm = connection.prepareStatement(sql);
 			ResultSet rs = stm.executeQuery();
-
-			// stm.setString(1, "%" + idAtiv + "%");
-
 
 			while (rs.next()) {
 				Atividades a = new Atividades();
@@ -217,7 +216,45 @@ public class TreinadorDAOImp implements TreinadorDAO {
 				lista.add(a);
 			}
 
-			//connection.close();
+			// connection.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return lista;
+	}
+
+	public List<Atividades> buscaTableAtivRefinado(long idMod) {
+
+		List<Atividades> lista = new ArrayList<Atividades>();
+
+		try {
+
+			String sql = "SELECT ATV.ID_ATIVIDADE,ATV.NOME_ATIVIDADE,ATV.QTD_SECAO_ATIVIDADE,ATV.QTD_REPETICAO_ATIVIDADE,ATV.TEMPO_DURACAO_ATIVIDADE FROM ATIVIDADES_TREINO ATR\n"
+					+ "INNER JOIN ATIVIDADES ATV ON (ATR.ID_ATIVIDADE_FK = ATV.ID_ATIVIDADE)\n"
+					+ "WHERE ATR.ID_TREINO_FK = ?";
+
+			PreparedStatement stm = connection.prepareStatement(sql);
+
+			stm.setLong(1, idMod);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+
+				Atividades a = new Atividades();
+				a.setID(rs.getLong("ID_ATIVIDADE"));
+				a.setNome(rs.getString("NOME_ATIVIDADE"));
+				a.setQtdSecao(rs.getInt("QTD_SECAO_ATIVIDADE"));
+				a.setQtdRepeticao(rs.getInt("QTD_REPETICAO_ATIVIDADE"));
+				a.setTempoDuracao(rs.getDouble("TEMPO_DURACAO_ATIVIDADE"));
+
+				lista.add(a);
+			}
+
+			
+			System.out.println(lista);
+			connection.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -254,6 +291,110 @@ public class TreinadorDAOImp implements TreinadorDAO {
 		}
 
 		return null;
+
+	}
+
+	@Override
+	public List<Pacotes> tablePct() {
+
+		List<Pacotes> lista = new ArrayList<Pacotes>();
+
+		try {
+
+			String sql = "SELECT distinct ID_TREINO_FK FROM atividades_treino";
+
+			PreparedStatement stm = connection.prepareStatement(sql);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				Pacotes p = new Pacotes();
+				p.setIdModalidade(rs.getLong("ID_TREINO_FK"));
+
+				lista.add(p);
+			}
+			// connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return lista;
+
+	}
+
+	@Override
+	public List<Contrato> tableCon() {
+
+		List<Contrato> lista = new ArrayList<Contrato>();
+
+		try {
+
+			String sql = "SELECT * FROM contrato";
+
+			PreparedStatement stm = connection.prepareStatement(sql);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				Contrato c = new Contrato();
+				c.setID(rs.getLong("ID_CONTRATO"));
+				c.setCpf_cli(rs.getString("CPF_CLIENTE_FK"));
+				c.setDataContrato(rs.getDate("DATA_CONTRATO").toLocalDate());
+				c.setValorMes(rs.getDouble("VALOR_MENSAL_CONTRATO"));
+				c.setQtdParcelas(rs.getInt("PARCELAS"));
+				c.setQtdTreinos(rs.getInt("QTD_TREINOS"));
+				lista.add(c);
+
+			}
+			// connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return lista;
+	}
+
+	@Override
+	public void vincularPacoteContrato(ParticiparModalidade pm) {
+
+		try {
+			String sql = "INSERT INTO participacao_treino (ID_CONTRATO_FK, ID_TREINO_FK)" + "VALUES (?, ?)";
+			PreparedStatement stm = connection.prepareStatement(sql);
+			stm.setLong(1, pm.getIdContrato());
+			stm.setLong(2, pm.getIdModalidade());
+
+			stm.executeUpdate();
+
+			atualizarContrato(pm.getIdContrato());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void atualizarContrato(long idContrato) {
+
+		int cont;
+
+		try {
+
+			String sql = "SELECT * FROM contrato WHERE ID_CONTRATO LIKE ?";
+			PreparedStatement stm = connection.prepareStatement(sql);
+
+			stm.setString(1, "%" + idContrato + "%");
+			ResultSet rs = stm.executeQuery();
+
+			if (rs.next()) {
+				cont = rs.getInt("QTD_TREINOS");
+				sql = "UPDATE contrato SET QTD_TREINOS = ?  WHERE ID_CONTRATO = ?";
+				PreparedStatement stmU = connection.prepareStatement(sql);
+				stmU.setInt(1, cont);
+				stmU.setLong(2, idContrato);
+				stmU.executeUpdate();
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
